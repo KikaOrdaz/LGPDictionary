@@ -1,12 +1,18 @@
 import UploadGesture from "./Upload";
-import './App.css'
+import "./App.css";
 
 function App() {
+
   return (
     <div>
-      <h1>LGP Dictionary</h1>
+      <UploadGesture/ >
     </div>
   );
 }
 
 export default App;
+
+/*
+<h1>LGP Dictionary</h1>
+      <UploadGesture />
+*/

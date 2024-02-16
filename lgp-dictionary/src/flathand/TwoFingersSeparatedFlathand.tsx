@@ -26,7 +26,6 @@ function TwoFingersSeparatedFlathand() {
 
   return (
     <div>
-      <h3>2 dedos espalhados</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>

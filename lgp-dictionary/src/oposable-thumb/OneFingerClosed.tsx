@@ -21,7 +21,6 @@ function OneFingerClosed() {
 
   return (
     <div>
-      <h3>1 dedo, outros fechados</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>

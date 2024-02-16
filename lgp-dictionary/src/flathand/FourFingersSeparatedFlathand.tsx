@@ -1,4 +1,5 @@
 import Checkbox from "@mui/material/Checkbox";
+import { title } from "process";
 
 // 0 a 12
 function FourFingersSeparatedFlathand() {
@@ -30,7 +31,6 @@ function FourFingersSeparatedFlathand() {
 
   return (
     <div>
-      <h3>4 dedos espalhados</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>

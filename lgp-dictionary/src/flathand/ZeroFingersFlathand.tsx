@@ -19,7 +19,6 @@ function ZeroFingersFlathand() {
 
   return (
     <div>
-      <h3>0 dedos</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>

@@ -25,9 +25,10 @@ function OneFingerFlathand() {
     "../../images/image034.png",
   ];
 
+
+
   return (
     <div>
-      <h3>1 dedo</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>

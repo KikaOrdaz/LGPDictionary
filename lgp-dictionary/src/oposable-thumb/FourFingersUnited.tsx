@@ -24,7 +24,6 @@ function FourFingersUnited() {
 
   return (
     <div>
-      <h3>4 dedos unidos</h3>
       <ul style={{ listStyleType: "none" }}>
         {imageNames.map((imageName, index) => (
           <li key={index}>
