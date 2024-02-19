@@ -39,7 +39,7 @@ function Orientations() {
   ];
 
   return (
-    <div>
+    <div className="img">
       <Checkboxes imageNames={imageNames}/>
     </div>
   );
