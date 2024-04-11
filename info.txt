@@ -1,0 +1,8 @@
+├  SUCCESS  View your deployed application at https://lgpdictionary.pages.dev
+│ Navigate to the new directory cd lgpdictionary
+│ Run the development server npm run dev
+│ Preview your application npm run preview
+│ Deploy your application npm run deploy
+│ Read the documentation https://developers.cloudflare.com/pages
+│ Stuck? Join us at https://discord.gg/cloudflaredev
+│ 
