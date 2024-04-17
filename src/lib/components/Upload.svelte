@@ -12,7 +12,7 @@
 	let stroke = 'black';
 	let importName: string = "test";
 
-let open = false;
+	let open = false;
 
 	function useToast(){
 		console.log("toooaaast")
@@ -23,7 +23,6 @@ let open = false;
 				onClick: () => goto("/anotate")
 			},
 			})
-
 	}
 </script>
 
@@ -41,10 +40,11 @@ let open = false;
 				</div>
 			</Dialog.Title>
 			<Dialog.Description>
+				<input type="file" id="file-upload" name="file-upload"/>
 			</Dialog.Description>
 		</Dialog.Header>
 		<Dialog.Footer> 
-		<Button variant="outline" on:click={useToast}>
+		<Button variant="outline" type="submit" on:click={useToast}>
 			Upload
 		</Button>
 

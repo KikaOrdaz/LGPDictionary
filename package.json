@@ -42,6 +42,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@supabase/auth-ui-shared": "^0.1.8",
+		"@supabase/auth-ui-svelte": "^0.2.9",
 		"@supabase/supabase-js": "^2.41.1",
 		"bits-ui": "^0.19.7",
 		"clsx": "^2.1.0",
