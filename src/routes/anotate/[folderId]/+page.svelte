@@ -13,17 +13,50 @@
     import Xmark from '$lib/img/xmark.svelte';
     import {files} from '$lib/files'
     import Input from '$lib/components/ui/input/input.svelte';
+    import { Video } from 'flowbite-svelte';
+
 
 
     //export let playlist : {type: string, icon: any, fileName: string, date: string, anotation: boolean, selected: boolean, videos: {label: string, anotated: boolean}[]}
 	
-    export let data;
+    export let data: any;
     let currentPlaylist = files[0]
     $: annotatedCount = currentPlaylist.videos.filter((v) => v.anotated).length;
     
     let folderId = JSON.parse(JSON.stringify($page.params)).folderId
 
+    
+    function getFolderById(id : any) {
+        return data.folders.find((item: { id: any; }) => item.id === id);
+    }
+    
+    function getSignById(id : any) {
+        return data.signs.find((item: { id: any; }) => item.id === id);
+    }
+    
+    let folder = getFolderById(+folderId)
 
+    let current_sign = 0
+    
+
+    function nextOnPlaylist(){
+        current_sign++;
+
+        if (current_sign >= folder.signs_id.length){
+            current_sign = 0
+        }
+    }
+
+    function previousOnPlaylist(){
+        current_sign--;
+
+        if (current_sign <= -1){
+            current_sign = folder.signs_id.length - 1
+        } 
+    }
+
+
+    $: videoSrc = getSignById(folder.signs_id[current_sign]).video;
 </script>
 
 
@@ -37,7 +70,7 @@
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <Sidebar playlistId={folderId} data={data}/>      
+                <Sidebar playlistId={folderId} data={data} current_sign={current_sign}/>      
             </Sheet.Content>
           </Sheet.Root>
     </div>
@@ -57,18 +90,32 @@
 
 <div class="flex flex-col items-center gap-y-7 py-5">
 
-
-    <div class="flex flex-row gap-x-4">
-        <button>
+    <div class="flex flex-row gap-x-4 pb-5">
+        <button on:click={previousOnPlaylist}>
             <ChevronLeft />
         </button>
-        <Card.Root class="flex items-center justify-center h-40 aspect-video">
-            <PlayFill />
-        </Card.Root>
-        <button>
+
+
+            <Card.Root class="flex items-center justify-center h-40 aspect-video">
+            
+                {#if videoSrc}
+                    <img src={videoSrc} alt=""/>
+                {:else}
+                    <PlayFill />
+                {/if}
+
+
+                
+                
+                
+            </Card.Root>
+        <button on:click={nextOnPlaylist}>
             <ChevronRight />
         </button>
     </div>
+
+
+    {getSignById(folder.signs_id[current_sign]).name}
     
     <div class="flex items-center">
         <Tabs.Root value="configuracao" class="">

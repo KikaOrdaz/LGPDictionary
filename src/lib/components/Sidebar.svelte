@@ -6,11 +6,15 @@
     import { Separator } from "$lib/components/ui/separator";
     import Pencil from "$lib/img/pencil.svelte"
     import {files} from '$lib/files'
+    import { Video } from 'flowbite-svelte';
+	import { Reload } from "svelte-radix";
 
     //export let folderName = "Animais"
     export let playlistId: any;
     export let data: any;
+    export let current_sign: number;
     let currentPlaylist = files[0]
+    
 
 
     function getFolderById(id : any) {
@@ -24,6 +28,8 @@
 
     let playlist = getFolderById(+playlistId)
 
+    
+    $: videoSrc = getSignById(playlist.signs_id[current_sign]).video;
 
     // export let playlist : {type: string, icon: any, fileName: string, date: string, anotation: boolean, selected: boolean, videos: {label: string, anotated: boolean}[]};
     // $: annotatedCount = playlist.signs_id.filter((v) => v.anotated).length;
@@ -47,21 +53,38 @@
     <ScrollArea class= "flex flex-row py-5">
         <div class="flex flex-col items-center gap-7">
             {#each playlist.signs_id as sign}
-            <div class="flex flex-col gap-1 items-center">
-                {getSignById(sign).name}
-                <Card.Root class="flex flex-col w-60 aspect-video">
-                    <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
-                        {#if getSignById(sign).anotated}
-                            <Pencil />
-                        {/if}
-                        </div>
+                <div class="flex flex-col gap-1 items-center">
+                    {getSignById(sign).name}
+                    {#if playlist.signs_id[current_sign] == sign}
+                        <Card.Root class="flex flex-col w-60 aspect-video" style="border: 2px solid #0096FF;">
+                            <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
+                                {#if getSignById(sign).anotated}
+                                    <Pencil />
+                                {/if}
+                                </div>
 
-                    <div class="flex flex-row items-center justify-center sticky">
-                        <PlayFill />
-                    </div>
-                    <div class="flex flex-1 pb-2"></div>
-                </Card.Root>
-            </div>
+                            <div class="flex flex-row items-center justify-center sticky">
+                                <img src={getSignById(sign).video} alt=""/>
+                            </div>
+                            <div class="flex flex-1 pb-2"></div>
+                        </Card.Root>
+                    {:else}
+                        <Card.Root class="flex flex-col w-60 aspect-video">
+                            <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
+                                {#if getSignById(sign).anotated}
+                                    <Pencil />
+                                {/if}
+                                </div>
+
+                            <div class="flex flex-row items-center justify-center sticky">
+                                <img src={getSignById(sign).video} alt=""/>
+
+                            </div>
+                            <div class="flex flex-1 pb-2"></div>
+                        </Card.Root>
+                    {/if}
+                    
+                </div>
             
             {/each}
         </div>
