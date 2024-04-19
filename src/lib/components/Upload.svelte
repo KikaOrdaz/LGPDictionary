@@ -3,19 +3,19 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
 	import Folder from '../img/folder.svelte';
-	import Sonner from './ui/sonner/sonner.svelte';
-	import { Toaster } from './ui/sonner';
 	import { toast } from "svelte-sonner";
-	import DialogContent from './ui/dialog/dialog-content.svelte';
 	import { goto } from '$app/navigation';
+	import { supabase } from "$lib/supabaseClient";
+	import { createEventDispatcher } from 'svelte'
 	
 	let stroke = 'black';
-	let importName: string = "test";
-
 	let open = false;
+	let files: FileList
+
+
 
 	function useToast(){
-		console.log("toooaaast")
+
 		open = false;
 		toast('Upload bem-sucedido!', {
 			action: {
@@ -23,6 +23,22 @@
 				onClick: () => goto("/anotate")
 			},
 			})
+	}
+
+	async function uploadImage(e: Event) {
+		let file = files[0]
+
+		const {data, error} = await supabase
+			.storage
+			.from("Signs")
+			.upload(file.name, file)
+
+		if(data) {
+			console.log("Dataa: " + data)
+		} else {
+			console.log("Erro: " + error)
+		}
+
 	}
 </script>
 
@@ -40,7 +56,12 @@
 				</div>
 			</Dialog.Title>
 			<Dialog.Description>
-				<input type="file" id="file-upload" name="file-upload"/>
+	
+
+				<input type="file" id="file-upload" name="file-upload" 
+					bind:files
+					on:change={(e) => uploadImage(e)}
+				/>
 			</Dialog.Description>
 		</Dialog.Header>
 		<Dialog.Footer> 
