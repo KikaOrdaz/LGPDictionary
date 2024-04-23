@@ -43,8 +43,7 @@
 				
 			</Button>
 
-			<Upload 
-			/>
+			<Upload database={data}/>
 		</div>
 	</div>
 

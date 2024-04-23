@@ -31,7 +31,8 @@
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <Sidebar playlistId={1} data={data}/>            </Sheet.Content>
+                <Sidebar playlistId={1} data={data} current_sign={0}/>            
+            </Sheet.Content>
           </Sheet.Root>
     </div>
     <div class="grow">

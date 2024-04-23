@@ -49,7 +49,7 @@
 		"@supabase/supabase-js": "^2.41.1",
 		"bits-ui": "^0.19.7",
 		"clsx": "^2.1.0",
-		"svelte-radix": "^1.0.3",
+		"svelte-radix": "^1.1.0",
 		"svelte-sonner": "^0.3.19",
 		"svelte-video-player": "^1.2.5",
 		"tailwind-merge": "^2.2.1",
