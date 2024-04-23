@@ -2,34 +2,12 @@
 	import Plus from '../img/plus.svelte';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import { Button } from '$lib/components/ui/button';
-	import Folder from '../img/folder.svelte';
 	import { toast } from "svelte-sonner";
 	import { goto } from '$app/navigation';
 	import { supabase } from "$lib/supabaseClient";
-	import { createEventDispatcher } from 'svelte'
-	import * as Card from "$lib/components/ui/card/index.js";
-	import * as Select from "$lib/components/ui/select/index.js";
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
-   
-	const frameworks = [
-	  {
-		value: "sveltekit",
-		label: "SvelteKit"
-	  },
-	  {
-		value: "next",
-		label: "Next.js"
-	  },
-	  {
-		value: "astro",
-		label: "Astro"
-	  },
-	  {
-		value: "nuxt",
-		label: "Nuxt.js"
-	  }
-	];
+	import * as Tabs from "$lib/components/ui/tabs";
 	
 	export let database: any;
 
@@ -37,10 +15,6 @@
 	let open = false;
 	let files: FileList
 
-
-	function delay(ms: number) {
-    	return new Promise( resolve => setTimeout(resolve, ms) );
-	}
 
 	function useToast(){
 
@@ -120,6 +94,8 @@
 
 </script>
 
+ 
+
 <Dialog.Root bind:open>
 	<Dialog.Trigger>
 		<Button variant="outline">
@@ -127,48 +103,50 @@
 		</Button> 
 	</Dialog.Trigger>
 	<Dialog.Content>
-		<!--<Dialog.Header>
-			<Dialog.Title>
-				<div class="flex flex-row gap-2 py-2">
-					<Folder /> Arrasta uma pasta/ficheiro
-				</div>
-			</Dialog.Title>
-			<Dialog.Description>
-	
 
-				
-			</Dialog.Description>
-		</Dialog.Header>
-		<Dialog.Footer> 
-		
-		</Dialog.Footer>
-		-->
 		<Dialog.Header>
-			<Dialog.Title>Adicionar um gesto</Dialog.Title>
-			<Dialog.Description>Fazer upload de um só gesto.</Dialog.Description>
+			<Dialog.Title>Adicionar gesto(s)</Dialog.Title>
+			<Dialog.Description>Fazer upload de um só gesto ou de uma pasta.</Dialog.Description>
 		</Dialog.Header>
-		<form>
-			<div class="grid w-full items-center gap-4">
-				<div class="flex flex-col space-y-1.5">
-				<Label for="name">Nome</Label>
-				<Input id="name" placeholder="Nome do gesto" bind:value={sign.name}/>
-				</div>
+		<div class="w-fit items-center">
+			<Tabs.Root value="sign" class="w-[400px]">
+				<Tabs.List >
+				  <Tabs.Trigger value="sign">Gesto</Tabs.Trigger>
+				  <Tabs.Trigger value="folder">Pasta</Tabs.Trigger>
+				</Tabs.List>
+				<Tabs.Content value="sign">
+					
+			
+					<form>
+						<div class="grid w-full items-center gap-4">
+							<div class="flex flex-col space-y-1.5">
+							<Label for="name">Nome</Label>
+							<Input id="name" placeholder="Nome do gesto" bind:value={sign.name}/>
+							</div>
+			
+							<div class="flex flex-col space-y-1.5">
+							<Label for="theme">Tema</Label>
+							<Input id="theme" placeholder="Tema do gesto" bind:value={sign.theme}/>
+							</div>
+			
+							<!-- <Input id="file-upload" type="file" name="file-upload" 
+								on:change={(e) => uploadImage(e)}
+							/> -->
+			
+							<Input id="file-upload" type="file" name="file-upload"/>
+						</div>
+					</form>
+				</Tabs.Content>
+				<Tabs.Content value="folder">Change your password here.</Tabs.Content>
+			  </Tabs.Root>
 
-				<div class="flex flex-col space-y-1.5">
-				<Label for="theme">Tema</Label>
-				<Input id="theme" placeholder="Name of your project" bind:value={sign.theme}/>
-				</div>
-
-				<!-- <Input id="file-upload" type="file" name="file-upload" 
-					on:change={(e) => uploadImage(e)}
-				/> -->
-
-				<Input id="file-upload" type="file" name="file-upload"/>
-			</div>
-		</form>
+			
+		</div>
+		
+		
 		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={useToast} on:click={insertRow}>
+			<Button variant="outline" type="submit" on:click={insertRow} on:click={useToast} >
 				Upload
 			</Button>
 		</Dialog.Footer>
