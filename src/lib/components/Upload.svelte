@@ -32,9 +32,8 @@
     	return database.signs.find((item: { name: any; }) => item.name === name);
   	}
 
-	async function uploadImage(e: Event) {
+	async function uploadImage() {
 		let file = files[0]
-
 		const {data, error} = await supabase
 			.storage
 			.from("Signs")
@@ -59,13 +58,12 @@
 		
 		if(data) {
 			console.log("Dataa: " + data[0].id + ": " + typeof data[0].id)
-
-
-			
 			addFolder(data[0].id)
 		} else {
 			console.log("Erro: " + error.message)
 		}
+
+		uploadImage()
 	}
 
 	async function  addFolder(file_id :any) {
@@ -128,12 +126,9 @@
 							<Label for="theme">Tema</Label>
 							<Input id="theme" placeholder="Tema do gesto" bind:value={sign.theme}/>
 							</div>
-			
-							<!-- <Input id="file-upload" type="file" name="file-upload" 
-								on:change={(e) => uploadImage(e)}
-							/> -->
-			
-							<Input id="file-upload" type="file" name="file-upload"/>
+				
+							<input type="file" bind:files />
+
 						</div>
 					</form>
 				</Tabs.Content>

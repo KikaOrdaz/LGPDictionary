@@ -13,11 +13,8 @@
     import Xmark from '$lib/img/xmark.svelte';
     import {files} from '$lib/files'
     import Input from '$lib/components/ui/input/input.svelte';
-    import { Video } from 'flowbite-svelte';
 
 
-
-    //export let playlist : {type: string, icon: any, fileName: string, date: string, anotation: boolean, selected: boolean, videos: {label: string, anotated: boolean}[]}
 	
     export let data: any;
     let currentPlaylist = files[0]
@@ -55,8 +52,11 @@
         } 
     }
 
-
     $: videoSrc = getSignById(folder.signs_id[current_sign]).video;
+
+    /* window.addEventListener('currentSignChange', (event) => {
+        current_sign = (<any>event).detail;
+    }); */
 </script>
 
 
