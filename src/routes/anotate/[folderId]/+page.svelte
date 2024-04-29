@@ -18,7 +18,8 @@
 	
     export let data: any;
     let currentPlaylist = files[0]
-    $: annotatedCount = currentPlaylist.videos.filter((v) => v.anotated).length;
+    $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
+
     
     let folderId = JSON.parse(JSON.stringify($page.params)).folderId
 
@@ -52,7 +53,7 @@
         } 
     }
 
-    $: videoSrc = getSignById(folder.signs_id[current_sign]).video;
+    // $: videoSrc = getSignById(folder.signs_id[current_sign]).video;
 
     /* window.addEventListener('currentSignChange', (event) => {
         current_sign = (<any>event).detail;
@@ -66,7 +67,7 @@
             <Sheet.Trigger>
                 <div class="flex flex-col gap-1 items-center">
                     <Line_3Horizontal />
-                    <!-- {annotatedCount}/{currentPlaylist.videos.length} -->
+                    {anotatedCount}/{folder.signs_id.length}
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
@@ -97,13 +98,13 @@
 
 
             <Card.Root class="flex items-center justify-center h-40 aspect-video">
+                <PlayFill />
             
-                {#if videoSrc}
+                <!-- {#if videoSrc}
                     <img src={videoSrc} alt=""/>
                 {:else}
-                    <PlayFill />
                 {/if}
-
+ -->
 
                 
                 

@@ -24,32 +24,10 @@
     let playlist = getFolderById(+playlistId)
 
     function changeCurrentSign(sign_id : number){
+        console.log("sign_id: " + sign_id)
         current_sign = sign_id
-        dispatch('currentSignChange', current_sign); // Dispatch event
+        console.log("current_sign: " + current_sign)
     }
-
-    function dispatchCurrentSign() {
-    dispatch('currentSignChange', current_sign);
-    }
-
-  function dispatch(name: string, detail: any) {
-    const event = new CustomEvent(name, {
-      detail,
-      bubbles: true,
-      composed: true,
-    });
-    window.dispatchEvent(event);
-  }
-
-    // Listen for changes to current_sign and dispatch
-    // $: dispatchCurrentSign();
-    $: {
-        const event = new CustomEvent('currentSignChange', {
-            detail: current_sign
-        });
-        window.dispatchEvent(event);
-    }
-
 
 
     $: anotatedCount = playlist.signs_id.filter((v: any) => v.anotated).length;
@@ -75,7 +53,7 @@
         <div class="flex flex-col items-center gap-7">
             {#each playlist.signs_id as sign}
                 <div class="flex flex-col gap-1 items-center">
-                    {#if playlist.signs_id[current_sign] == sign}
+                    {#if current_sign == sign}
                         <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
                             <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                 {#if getSignById(sign).anotated}
@@ -89,7 +67,7 @@
                             <div class="flex flex-1 pb-2"></div>
                         </Card.Root>
                     {:else}
-                        <button>
+                        <button on:click={() => changeCurrentSign(sign)}>
                             <Card.Root class="flex flex-col w-60 h-20">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                     {#if getSignById(sign).anotated}
