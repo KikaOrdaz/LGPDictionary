@@ -4,28 +4,133 @@
 	import * as Zero from "$lib/img/signs/0.svelte"
 	import { Content } from './ui/dialog';
 	import ScrollArea from './ui/scroll-area/scroll-area.svelte';
+	import { writable } from 'svelte/store';
 
 	export let data: any;
 	export let currentTab: String;
 
-	let squares = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-    let expandedSquare: number | null = null;
+	/* let squares = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    let expandedSquare: number | null = null; */
+
+
+	let isParSelected = writable(new Map<any, boolean>());
+
+	// Set boolean value for each ID
+	data.parameters.forEach((par: { id: any; }) => {
+		isParSelected.update(
+			map => {
+        const newMap = new Map(map);
+        newMap.set(par.id, false);
+        return newMap;
+	}); 
+	});
+
+	type AnnotationArray = {
+		configuration: any[];
+		movement: any[];
+		location: any[];
+		orientation: any[];
+		expression: any[];
+		theme: any[];
+	}
+
+	export function updateSelectedState(id: any, isSelected: boolean) {
+    isParSelected.update(map => {
+        const newMap = new Map(map);
+        newMap.set(id, isSelected);
+        return newMap;
+    });
+	}
+
+
+	let anotationArray: AnnotationArray = {configuration: [], movement: [], location: [], orientation: [], expression: [], theme: []}
+
+	let anotationWritten : string
 
 	function getElementByCode(código : any) {
-    return data.parameters.find((item: { código: any; }) => item.código === código);
-  }
+    	return data.parameters.find((item: { código: any; }) => item.código === código);
+	}
+
+	function selectParameter(id: any, tipo: any){
+		let isSelected = $isParSelected.get(id)
+
+		updateSelectedState(id, !isSelected)	
+		
+		
+
+		switch(tipo){
+				case "configuracao":{
+					if(!isSelected){
+						anotationArray.configuration.push(id)
+					} else {
+						anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
+					}
+
+					break;
+				}
+
+				case "movimento":{
+					if(!isSelected){
+						anotationArray.movement.push(id)
+					} else {
+						anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
+					}
+					break;
+				}
+
+				case "localizacao":{
+					if(!isSelected){
+						anotationArray.location.push(id)
+					} else {
+						anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
+					}
+					break;
+				}
+
+				case "orientacao":{
+					if(!isSelected){
+						anotationArray.orientation.push(id)
+					} else {
+						anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
+					}
+					break;
+				}
+
+				case "expressao facial":{
+					if(!isSelected){
+						anotationArray.expression.push(id)
+					} else {
+						anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
+					}
+					break;
+				}
+
+				case "tema":{
+					if(!isSelected){
+						anotationArray.theme.push(id)
+					} else {
+						anotationArray.theme = anotationArray.theme.filter((e, i) => i !== anotationArray.theme.indexOf(id)); 
+					}
+					break;
+				}
+			}
+
+		console.log(anotationArray)
+	}
+
 
 </script>
 <ScrollArea class="flex h-[28rem] pt-4">
 	<div class="grid grid-cols-4 gap-4">
 		{#each data.parameters as par}
 			{#if par.is_parent && par.tipo == currentTab} 
-				<Card.Root class="flex items-center justify-center aspect-square w-30">
-					<Card.Content>
-						<Collapsible.Root>
-							<Collapsible.Trigger>
+				<button on:click={() => selectParameter(par.id, par.tipo)}>
+					{#if $isParSelected.get(par.id)}
+						<Card.Root class="flex items-center justify-center aspect-square w-60" style="border: 2px solid #0096FF;">
+							<Card.Content>
 								{#if par.tipo == "configuracao"}
 									<img class="flex w-20" src={par.image} alt=""/>
+									{$isParSelected.get(par.id)}
 								{:else if par.image == null}
 									{#if par.nome !=null}
 										{par.nome}
@@ -33,75 +138,30 @@
 										{par.código}
 									{/if}
 								{/if}
-								<!-- {par.código} -->
-							</Collapsible.Trigger>
-							<Collapsible.Content class="flex flex-row">
-								{#if par.children.length > 0}
-								<!-- <div class="flex flex-row flex-end"></div> -->
-									{#each par.children as child}
-										{#if (par.tipo == "configuracao" || par.tipo == "localizacao")}
-											{#if getElementByCode(child).image != null}
-												<img class="flex w-10" src={getElementByCode(child).image} alt=""/>
-											{:else}
-												{getElementByCode(child).código}
-											{/if}
-										{/if}
-									{/each}	
+							</Card.Content>
+						</Card.Root>
+					{:else}
+						<Card.Root class="flex items-center justify-center aspect-square w-60">
+							<Card.Content>
+								{#if par.tipo == "configuracao"}
+									<img class="flex w-20" src={par.image} alt=""/>
+									{$isParSelected.get(par.id)}
+								{:else if par.image == null}
+									{#if par.nome !=null}
+										{par.nome}
+									{:else}
+										{par.código}
+									{/if}
 								{/if}
-							</Collapsible.Content>
-						</Collapsible.Root>
-					</Card.Content>
-				</Card.Root>
+							</Card.Content>
+						</Card.Root>
+					{/if}
+						
+				
+						
+				</button>
 			{/if}
 		{/each}
 		</div>
 
 </ScrollArea>
-
-
-<!--
-	{#each Array(5) as _, index (index)}
-	<div class="flex flex-row gap-3">
-		{#each Array(5) as _, index (index)}
-			<div class="flex flex-col p-3">
-				<Card.Root class="flex items-center justify-center aspect-square">
-					<Card.Content>
-						<Collapsible.Root>
-							<Collapsible.Trigger>
-								<img class="" src="$lib/img/signs/0..svg" alt="Thumb"/>
-								Abrir
-							</Collapsible.Trigger>
-							<Collapsible.Content>
-								Gestos
-								Gestos
-								Gestos
-								Gestos
-								Gestos
-								Gestos
-								
-							</Collapsible.Content>
-						</Collapsible.Root>
-					</Card.Content>
-				</Card.Root>
-			</div>
-		{/each}
-	</div>
-{/each}
--->
-
-
-<!--
-<div class="grid grid-cols-5 gap-4">
-    {#each squares as square}
-        <button
-            class="aspect-square border"
-            class:col-span-2={square === expandedSquare}
-            class:row-span-2={square === expandedSquare}
-            on:click={() => (expandedSquare = square)}
-        >
-            {square}
-		</button>
-    {/each}
-</div>
--->
-

@@ -118,7 +118,7 @@
 
     {getSignById(folder.signs_id[current_sign]).name}
     
-    <div class="flex items-center">
+    <div class="flex place-items-center">
         <Tabs.Root value="configuracao" class="">
             <Tabs.List>
                 <Tabs.Trigger value="configuracao">Configuração</Tabs.Trigger>

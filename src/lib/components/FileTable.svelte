@@ -29,53 +29,6 @@
 <div class="px-10">
 	<Table.Root>
 		<Table.Body>
-			<!-- {#each data.signs as sign}
-				<Table.Row class="content-center">
-					<Table.Cell>
-					{#if !selection}
-							<PlayRectangle/>
-					{:else}
-						<Button variant="ghost" on:click={() => {sign.selected = !sign.selected}}>
-							{#if !sign.selected}
-								<CheckmarkCircle />
-							{:else}
-								<CheckmarkCircleFill />
-							{/if}
-						</Button>
-					{/if}
-				</Table.Cell>
-						<Table.Cell class="font-medium"> {sign.name} </Table.Cell>
-						<Table.Cell>{new Date(sign.created_at).toLocaleDateString()}</Table.Cell>
-
-						<a data-sveltekit-reload href="./anotate}">
-								<Button variant = "ghost">
-									{#if sign.anotated}
-										<PencilCircleFill />
-									{:else}
-										<PencilCircle />
-									{/if}
-								</Button>
-						</a>	
-			
-
-						<DropdownMenu.Root>
-							<DropdownMenu.Trigger> 
-								<Ellipsis/>
-							</DropdownMenu.Trigger>
-							<DropdownMenu.Content>
-							<DropdownMenu.Group>
-								<DropdownMenu.Item>Mudar o nome</DropdownMenu.Item>
-								<DropdownMenu.Item>Mover</DropdownMenu.Item>
-								<DropdownMenu.Item>Partilhar</DropdownMenu.Item>
-								<DropdownMenu.Item>Detalhes</DropdownMenu.Item>
-							</DropdownMenu.Group>
-							</DropdownMenu.Content>
-						</DropdownMenu.Root>
-						
-
-				</Table.Row>
-			
-			{/each} -->
 			{#each data.folders as folder}
 				<Table.Row class="content-center">
 					<Table.Cell>
