@@ -71,7 +71,7 @@
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <Sidebar playlistId={folderId} data={data} current_sign={current_sign}/>      
+                <Sidebar playlistId={folderId} data={data} bind:current_sign={current_sign}/>      
             </Sheet.Content>
           </Sheet.Root>
     </div>
@@ -168,4 +168,3 @@
         </Tabs.Root>
     </div>
 </div>
-

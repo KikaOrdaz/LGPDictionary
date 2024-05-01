@@ -21,8 +21,8 @@
 	export let data: any;
 
 	function getSignById(id : any) {
-    return data.signs.find((item: { id: any; }) => item.id === id);
-  }
+    	return data.signs.find((item: { id: any; }) => item.id === id);
+  	}
 
 </script>
 
