@@ -10,10 +10,11 @@
 	import * as Tabs from "$lib/components/ui/tabs";
 	
 	export let database: any;
-
+	
 	let stroke = 'black';
 	let open = false;
 	let files: FileList
+	let sign = {name :"", theme:""}
 
 
 	function useToast(){
@@ -86,10 +87,6 @@
 		}
 
 	}
-
-	let sign = {name :"", theme:""}
-
-
 </script>
 
  
