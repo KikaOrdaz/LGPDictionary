@@ -13,17 +13,56 @@
     import Xmark from '$lib/img/xmark.svelte';
     import {files} from '$lib/files'
     import Input from '$lib/components/ui/input/input.svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { supabase } from "$lib/supabaseClient";
 
-
+    type AnnotationArray = {
+		configuration: any[];
+		movement: any[];
+		location: any[];
+		orientation: any[];
+		expression: any[];
+		theme: any[];
+	}
 	
     export let data: any;
     let currentPlaylist = files[0]
+    let folderId = JSON.parse(JSON.stringify($page.params)).folderId
+    let folder = getFolderById(+folderId)
+    let current_sign = 0
+    export let folderAnotation = new Array<AnnotationArray>(folder.signs_id.length);
+    export let isParSelected =  writable(new Map<any, boolean>);
+    export let anotationArray: AnnotationArray = {configuration: [], movement: [], location: [], orientation: [], expression: [], theme: []}
+    
     $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
 
-    
-    let folderId = JSON.parse(JSON.stringify($page.params)).folderId
+    	// Set boolean value for each ID
+	
+        
+        /*  
+        folder.signs_id.forEach((index: number) => {
+            data.parameters.forEach((par: { id: any; }) => {
+                isParSelected[index].update(
+                    map => {
+                        const newMap = new Map(map);
+                        newMap.set(par.id, false);
+                        return newMap;
+                    }); 
+                });
+            }) 
+        })
+        
+        */
 
-    
+    data.parameters.forEach((par: { id: any; }) => {
+        isParSelected.update(
+            map => {
+                const newMap = new Map(map);
+                newMap.set(par.id, false);
+                return newMap;
+            }); 
+    });
+
     function getFolderById(id : any) {
         return data.folders.find((item: { id: any; }) => item.id === id);
     }
@@ -32,11 +71,6 @@
         return data.signs.find((item: { id: any; }) => item.id === id);
     }
     
-    let folder = getFolderById(+folderId)
-
-    let current_sign = 0
-    
-
     function nextOnPlaylist(){
         current_sign++;
 
@@ -52,12 +86,31 @@
             current_sign = folder.signs_id.length - 1
         } 
     }
+    async function insertAnotation(annotation: AnnotationArray, sign_id: number) {
+        console.log("2 annotation: ", annotation);
+        console.log("sign_id: ", sign_id);
 
-    // $: videoSrc = getSignById(folder.signs_id[current_sign]).video;
+        const { data, error } = await supabase
+            .from('signs')
+            // .select()
+            .update({ anotation: annotation }) // Update with the annotation object
+            .eq('id', sign_id);
 
-    /* window.addEventListener('currentSignChange', (event) => {
-        current_sign = (<any>event).detail;
-    }); */
+
+        console.log("data: ", data, " error: ", error);
+    }
+
+    function endAnotation() {
+        console.log("End annotation");
+        folderAnotation.forEach((annotation: AnnotationArray, index: number) => {
+            if (annotation) {
+
+                console.log("1 annotation: " + annotation)
+                insertAnotation(annotation, folder.signs_id[index]);
+            }
+        });
+    }
+
 </script>
 
 
@@ -89,13 +142,12 @@
 
 </div>
 
-<div class="flex flex-col items-center gap-y-7 py-5">
+<div class="flex flex-col items-center gap-y-3 py-5">
 
-    <div class="flex flex-row gap-x-4 pb-5">
+    <div class="flex flex-row gap-x-4 pb-3">
         <button on:click={previousOnPlaylist}>
             <ChevronLeft />
         </button>
-
 
             <Card.Root class="flex items-center justify-center h-40 aspect-video">
                 <PlayFill />
@@ -103,11 +155,7 @@
                 <!-- {#if videoSrc}
                     <img src={videoSrc} alt=""/>
                 {:else}
-                {/if}
- -->
-
-                
-                
+                {/if} -->
                 
             </Card.Root>
         <button on:click={nextOnPlaylist}>
@@ -129,8 +177,8 @@
                 <Tabs.Trigger value="tema">Tema</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
-                    <ParametersOptions data={data} currentTab={"configuracao"}/>
-                    <div class="flex flex-row justify-center pt-8">
+                    <ParametersOptions data={data} currentTab={"configuracao"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <div class="flex flex-row sticky justify-center pt-8 bottom-4">
                         <form>
                             <div class="flex relative w-60">
                                 <Input placeholder="Anotação" class="pl-8"/>
@@ -139,14 +187,14 @@
                     </div>
             </Tabs.Content>
             <Tabs.Content value="movimento">
-                    <ParametersOptions data={data} currentTab={"movimento"}/>
+                    <ParametersOptions data={data} currentTab={"movimento"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="localizacao">
-                    <ParametersOptions data={data} currentTab={"localizacao"}/>
+                    <ParametersOptions data={data} currentTab={"localizacao"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="orientacao">
-                    <ParametersOptions data={data} currentTab={"orientacao"}/>
-                    <div class="flex flex-row justify-center pt-8 gap-4">
+                    <ParametersOptions data={data} currentTab={"orientacao"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                         <form>
                             <div class="flex relative w-60">
                                 <Input placeholder="Anotação" class="pl-8"/>
@@ -160,11 +208,20 @@
                     </div>
             </Tabs.Content>
             <Tabs.Content value="expressoes">
-                    <ParametersOptions data={data} currentTab={"expressoes"}/>
+                    <ParametersOptions data={data} currentTab={"expressoes"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="tema">
-                    <ParametersOptions data={data} currentTab={"tema"}/>
+                    <ParametersOptions data={data} currentTab={"tema"} bind:anotationArray={anotationArray} isParSelected={isParSelected} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
             </Tabs.Content>
         </Tabs.Root>
     </div>
+</div>
+
+
+<div class="fixed bottom-0 right-0 p-3">
+    <!-- <a data-sveltekit-reload href="../manage"> -->
+        <Button variant="outline" on:click={() => endAnotation()}>
+            Done
+        </Button>
+    <!-- </a> -->
 </div>
