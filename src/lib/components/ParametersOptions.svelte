@@ -37,13 +37,8 @@
     	return data.parameters.find((item: { código: any; }) => item.código === código);
 	}
 
-	// isParSelected[current_sign].subscribe(map => {return map.get(par.id);})
-	function selectParameter(id: any, tipo: any){
 
-		/* let isSelected;
-		isParSelected[current_sign].subscribe(map => {
-			isSelected = map.get(id);
-		}); */
+	function selectParameter(id: any, tipo: any){
 
 		let isSelected = $isParSelected.get(id);
 		
