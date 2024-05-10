@@ -37,7 +37,7 @@
     let database_ann_array : Array<number>
 
     $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
-
+    $: current_video = getSignById(folder.signs_id[current_sign]).video
 
     let signStores: any[] = []; // Array to store separate stores for each sign
 
@@ -157,16 +157,18 @@
         <button on:click={previousOnPlaylist}>
             <ChevronLeft />
         </button>
+            {#if current_video}
+                <!-- <img src={videoSrc} alt=""/> -->
+                    <!-- svelte-ignore a11y-media-has-caption -->
+                    <video width="320" height="240" controls>
+                        <source src={current_video} type="video/mp4">
+                    </video>
+            {:else}
+                <Card.Root class="flex items-center justify-center h-40 aspect-video">
+                    <PlayFill />
+                </Card.Root>
+            {/if}
 
-            <Card.Root class="flex items-center justify-center h-40 aspect-video">
-                <PlayFill />
-            
-                <!-- {#if videoSrc}
-                    <img src={videoSrc} alt=""/>
-                {:else}
-                {/if} -->
-                
-            </Card.Root>
         <button on:click={nextOnPlaylist}>
             <ChevronRight />
         </button>

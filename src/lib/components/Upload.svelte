@@ -33,7 +33,18 @@
     	return database.signs.find((item: { name: any; }) => item.name === name);
   	}
 
-	async function uploadImage() {
+	async function getVideoURL() {
+		// let file = files[0]
+
+		const { data } = supabase
+			.storage
+			.from('Signs')
+			.getPublicUrl(/* file.name */"Formiga.mp4")
+
+		return data.publicUrl
+	}
+
+	async function uploadVideo() {
 		let file = files[0]
 		const {data, error} = await supabase
 			.storage
@@ -64,7 +75,7 @@
 			console.log("Erro: " + error.message)
 		}
 
-		uploadImage()
+		uploadVideo()
 	}
 
 	async function  addFolder(file_id :any) {
@@ -138,7 +149,7 @@
 		
 		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={insertRow} on:click={useToast} >
+			<Button variant="outline" type="submit" on:click={getVideoURL} on:click={useToast} >
 				Upload
 			</Button>
 		</Dialog.Footer>
