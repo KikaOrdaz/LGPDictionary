@@ -31,35 +31,46 @@
     let folder = getFolderById(+folderId)
     let current_sign = 0
     export let folderAnotation = new Array<AnnotationArray>(folder.signs_id.length);
-    export let isParSelected =  writable(new Map<any, boolean>);
-    export let anotationArray: AnnotationArray = {configuration: [], movement: [], location: [], orientation: [], expression: [], theme: []}
-    
+    // export let isParSelected =  writable(new Map<any, boolean>);
+    export let anotationArray: AnnotationArray = getSignById(folder.signs_id[current_sign]).anotation
+    let database_annotation
+    let database_ann_array : Array<number>
+
     $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
 
 
     let signStores: any[] = []; // Array to store separate stores for each sign
 
     // Create and initialize a separate store for each sign
-    folder.signs_id.forEach((signId: number) => {
+    folder.signs_id.forEach((signId: number, index: number) => {
+
+        database_annotation = getSignById(signId).anotation
+        database_ann_array = []
+        if(database_annotation){
+            database_ann_array = database_ann_array.concat(database_annotation["configuration"],
+            database_annotation["movement"],
+            database_annotation["location"],
+            database_annotation["orientation"],
+            database_annotation["expression"],
+            database_annotation["theme"])
+            folderAnotation[index] = database_annotation
+        }
+
         const store = writable(new Map<any, boolean>());
         data.parameters.forEach((par: { id: any; }) => {
             store.update(map => {
                 const newMap = new Map(map);
-                newMap.set(par.id, false);
+
+                // newMap.set(par.id, false);
+                newMap.set(par.id, database_ann_array.includes(par.id));
                 return newMap;
             }); 
         });
         signStores.push(store);
     });
 
-    data.parameters.forEach((par: { id: any; }) => {
-        isParSelected.update(
-            map => {
-                const newMap = new Map(map);
-                newMap.set(par.id, false);
-                return newMap;
-            }); 
-    });
+
+
 
     function getFolderById(id : any) {
         return data.folders.find((item: { id: any; }) => item.id === id);
@@ -175,7 +186,12 @@
                 <Tabs.Trigger value="tema">Tema</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
-                    <ParametersOptions data={data} currentTab={"configuracao"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"configuracao"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
                     <div class="flex flex-row sticky justify-center pt-8 bottom-4">
                         <form>
                             <div class="flex relative w-60">
@@ -185,13 +201,28 @@
                     </div>
             </Tabs.Content>
             <Tabs.Content value="movimento">
-                    <ParametersOptions data={data} currentTab={"movimento"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"movimento"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="localizacao">
-                    <ParametersOptions data={data} currentTab={"localizacao"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"localizacao"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="orientacao">
-                    <ParametersOptions data={data} currentTab={"orientacao"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"orientacao"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
                     <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                         <form>
                             <div class="flex relative w-60">
@@ -206,10 +237,20 @@
                     </div>
             </Tabs.Content>
             <Tabs.Content value="expressoes">
-                    <ParametersOptions data={data} currentTab={"expressoes"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"expressoes"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
             </Tabs.Content>
             <Tabs.Content value="tema">
-                    <ParametersOptions data={data} currentTab={"tema"} bind:anotationArray={anotationArray} isParSelected={signStores[current_sign]} bind:folderAnotation={folderAnotation} current_sign={current_sign}/>
+                    <ParametersOptions data={data} 
+                                        currentTab={"tema"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores[current_sign]} 
+                                        bind:folderAnotation={folderAnotation} 
+                                        current_sign={current_sign}/>
             </Tabs.Content>
         </Tabs.Root>
     </div>
@@ -217,9 +258,9 @@
 
 
 <div class="fixed bottom-0 right-0 p-3">
-    <a data-sveltekit-reload href="../manage">
+    <!-- <a data-sveltekit-reload href="../manage"> -->
         <Button variant="outline" on:click={() => endAnotation()}>
             Done
         </Button>
-    </a>
+    <!-- </a> -->
 </div>

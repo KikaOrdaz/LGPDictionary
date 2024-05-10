@@ -23,6 +23,7 @@
 	export let current_sign : number
 	let anotationWritten : string
 
+
 	
 
 	export function updateSelectedState(id: any, isSelected: boolean) {
