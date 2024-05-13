@@ -14,7 +14,7 @@
 	let stroke = 'black';
 	let open = false;
 	let files: FileList
-	let sign = {name :"", theme:""}
+	let sign = {name :"", theme:"", video:""}
 
 
 	function useToast(){
@@ -34,12 +34,12 @@
   	}
 
 	async function getVideoURL() {
-		// let file = files[0]
+		let file = files[0]
 
 		const { data } = supabase
 			.storage
 			.from('Signs')
-			.getPublicUrl(/* file.name */"Formiga.mp4")
+			.getPublicUrl(file.name)
 
 		return data.publicUrl
 	}
@@ -60,6 +60,10 @@
 
 	async function insertRow() {
 		
+		uploadVideo()
+
+		sign.video = await getVideoURL();
+
 		const { data, error } = await supabase
 		.from('signs')
 		.upsert([
@@ -75,7 +79,6 @@
 			console.log("Erro: " + error.message)
 		}
 
-		uploadVideo()
 	}
 
 	async function  addFolder(file_id :any) {
@@ -149,7 +152,7 @@
 		
 		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={getVideoURL} on:click={useToast} >
+			<Button variant="outline" type="submit" on:click={insertRow} on:click={useToast} >
 				Upload
 			</Button>
 		</Dialog.Footer>
