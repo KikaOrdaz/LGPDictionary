@@ -15,6 +15,7 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme:"", video:""}
+	let folder = {name :"", signs_id:[""]}
 
 
 	function useToast(){
@@ -44,8 +45,9 @@
 		return data.publicUrl
 	}
 
-	async function uploadVideo() {
-		let file = files[0]
+	async function uploadVideo(index: number) {
+		let file = files[index]
+
 		const {data, error} = await supabase
 			.storage
 			.from("Signs")
@@ -58,12 +60,20 @@
 		}
 	}
 
-	async function insertRow() {
+	async function insertSign(index: number) {
+
+		console.log("Na função insertSign")
 		
-		uploadVideo()
+		let file = files[index]
 
 		sign.video = await getVideoURL();
 
+		if(sign.name == ""){
+			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
+			sign.theme = folder.name
+		}
+
+		
 		const { data, error } = await supabase
 		.from('signs')
 		.upsert([
@@ -73,34 +83,58 @@
 		
 		
 		if(data) {
-			console.log("Dataa: " + data[0].id + ": " + typeof data[0].id)
-			addFolder(data[0].id)
+			console.log("insertSign - Dataa: " + data[0].id + ": " + typeof data[0].id)
+			//addFolder(data[0].id)
+			let signId = data[0].id + ""
+			if(folder.signs_id.length == 1){
+				folder.signs_id[0] = signId
+			} else {
+				folder.signs_id.push(signId)
+			}
 		} else {
-			console.log("Erro: " + error.message)
+			console.log("insertSign - Erro: " + error.message)
 		}
 
 	}
 
-	async function  addFolder(file_id :any) {
-		let uploadNumber = database.folders.length + 1
-		let signId = [file_id + ""]
 
-		console.log("uploadNumber: " + uploadNumber)
-		console.log("signId: " + signId)
+	async function  addFolder() {
+		console.log("Na função addFolder")
+
+		
+		for (let i = 0; i < files.length; ++i){
+			console.log("index: " +  i)
+			
+			uploadVideo(i)
+			insertSign(i)
+		}
+		
+		
+		if(folder.name == ""){
+			
+			let uploadNumber = database.folders.length + 1
+			folder.name = "Upload "+uploadNumber
+			console.log("uploadNumber: " + uploadNumber)
+		}
+		
+		console.log("Add folder: " + folder)
+		
 		const { data, error } = await supabase
 		.from('folders')
 		.insert([
-			{name: "Upload "+uploadNumber, signs_id: signId},
+			folder
 		])
 		.select()
 		
 		if(data) {
-			console.log("Dataa: " + data)
+			console.log("addFolder - Dataa: " + data)
 		} else {
-			console.log("Erro: " + error)
+			console.log("addFolder - Erro: " + error)
 		}
 
 	}
+
+	// $: multiple = files.length > 1
 </script>
 
  
@@ -124,26 +158,36 @@
 				  <Tabs.Trigger value="folder">Pasta</Tabs.Trigger>
 				</Tabs.List>
 				<Tabs.Content value="sign">
-					
-			
 					<form>
 						<div class="grid w-full items-center gap-4">
 							<div class="flex flex-col space-y-1.5">
-							<Label for="name">Nome</Label>
-							<Input id="name" placeholder="Nome do gesto" bind:value={sign.name}/>
+								<Label for="name">Nome</Label>
+								<Input id="name" placeholder="Nome do gesto" bind:value={sign.name}/>
 							</div>
 			
 							<div class="flex flex-col space-y-1.5">
-							<Label for="theme">Tema</Label>
-							<Input id="theme" placeholder="Tema do gesto" bind:value={sign.theme}/>
+								<Label for="theme">Tema</Label>
+								<Input id="theme" placeholder="Tema do gesto" bind:value={sign.theme}/>
 							</div>
 				
-							<input type="file" bind:files />
+							<input type="file" bind:files/>
 
 						</div>
 					</form>
 				</Tabs.Content>
-				<Tabs.Content value="folder">Change your password here.</Tabs.Content>
+				<Tabs.Content value="folder">
+					<form>
+						<div class="grid w-full items-center gap-4">
+							<div class="flex flex-col space-y-1.5">
+								<Label for="name">Nome</Label>
+								<Input id="name" placeholder="Nome da pasta" bind:value={folder.name}/>
+							</div>
+			
+							<input type="file" bind:files multiple/>
+
+						</div>
+					</form>
+				</Tabs.Content>
 			  </Tabs.Root>
 
 			
@@ -152,7 +196,7 @@
 		
 		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={insertRow} on:click={useToast} >
+			<Button variant="outline" type="submit" on:click={addFolder} on:click={useToast} >
 				Upload
 			</Button>
 		</Dialog.Footer>
