@@ -11,11 +11,6 @@
 	import CheckmarkCircleFill from '$lib/img/checkmark_circle_fill.svelte';
 	import { files } from '$lib/files';
 
-
-	
-	//export let anotation: {label: string, options: {name: string, show: boolean}[]}
-	//export let type: {label: string, options: {name: string, show: boolean}[]}
-	//export let theme: {label: string, options: {name: string, show: boolean}[]}
 	
 	export let selection: boolean;
 	export let data: any;
@@ -29,18 +24,19 @@
 <div class="px-10">
 	<Table.Root>
 		<Table.Body>
-			{#each data.folders as folder}
+			{#each data.signs as sign}
 				<Table.Row class="content-center">
 					<Table.Cell>
 					{#if !selection}
-						{#if folder.signs_id.length == 1}
+						<!-- {#if folder.signs_id.length == 1}
 							<PlayRectangle/>
-						{:else}
+							{:else}
 							<Folder/>
-						{/if}
+							{/if} -->
+							<PlayRectangle/>
 					{:else}
-						<Button variant="ghost" on:click={() => {folder.selected = !folder.selected}}>
-							{#if !folder.selected}
+						<Button variant="ghost" on:click={() => {sign.selected = !sign.selected}}>
+							{#if !sign.selected}
 								<CheckmarkCircle />
 							{:else}
 								<CheckmarkCircleFill />
@@ -49,24 +45,26 @@
 					{/if}
 				</Table.Cell>
 						<Table.Cell class="font-medium"> 
-							{#if folder.signs_id.length == 1}
+							<!-- {#if folder.signs_id.length == 1}
 								{getSignById(folder.signs_id[0]).name}
-							{:else}
+								{:else}
 								{folder.name}
-							{/if}
+								{/if} -->
+							{sign.name}
 						</Table.Cell>
 						<Table.Cell>
-							{#if folder.signs_id.length == 1}
+							{sign.theme}
+							<!-- {#if folder.signs_id.length == 1}
 								1 gesto
 							{:else}
 								{folder.signs_id.length} gestos
-							{/if}
-							</Table.Cell>
-						<Table.Cell>{new Date(folder.created_at).toLocaleDateString()}</Table.Cell>
+							{/if} -->
+						</Table.Cell>
+						<Table.Cell>{new Date(sign.created_at).toLocaleDateString()}</Table.Cell>
 
-						<a data-sveltekit-reload href='./anotate/{folder.id}'>
+						<a data-sveltekit-reload href='./anotate/{sign.id}'>
 								<Button variant = "ghost">
-									{#if folder.anotated}
+									{#if sign.anotated}
 										<PencilCircleFill />
 									{:else}
 										<PencilCircle />

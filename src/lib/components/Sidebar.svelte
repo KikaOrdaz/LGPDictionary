@@ -9,7 +9,7 @@
     export let playlistId: any;
     export let data: any;
     export let current_sign: number;
-    
+
 
 
     function getFolderById(id : any) {
@@ -52,7 +52,7 @@
             {#each playlist.signs_id as sign}
                 <div class="flex flex-col gap-1 items-center">
                     {#if playlist.signs_id[current_sign] == sign}
-                        <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
+                       <!--  <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
                             <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                 {#if getSignById(sign).anotated}
                                     <Pencil />
@@ -63,9 +63,9 @@
                                 {getSignById(sign).name}
                             </div>
                             <div class="flex flex-1 pb-2"></div>
-                        </Card.Root>
+                        </Card.Root> -->
                     {:else}
-                        <button on:click={() => changeCurrentSign(sign)}>
+                        <!-- <button on:click={() => changeCurrentSign(sign)}>
                             <Card.Root class="flex flex-col w-60 h-20">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                     {#if getSignById(sign).anotated}
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="flex flex-1 pb-2"></div>
                             </Card.Root>
-                        </button>
+                        </button> -->
                     {/if}
                     
                 </div>

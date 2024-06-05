@@ -24,7 +24,7 @@
 		toast('Upload bem-sucedido!', {
 			action: {
 				label: 'Anotar',
-				onClick: () => goto("/anotate")
+				onClick: () => /* goto("/anotate") */goto("/manage")
 			},
 			})
 			
