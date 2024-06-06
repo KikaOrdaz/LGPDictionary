@@ -50,6 +50,7 @@
 			case "configuracao":{
 				if(!isSelected){
 					console.log(id)
+					console.log(anotationArray)
 					anotationArray.configuration.push(id)
 					signsAnotation.set(sign.id, anotationArray)
 				} else {
@@ -109,7 +110,6 @@
 				break;
 			}
 		}
-		console.log(anotationArray)
 	}
 	
 	
@@ -142,7 +142,7 @@
 							<Card.Content>
 								{#if par.tipo == "configuracao"}
 									<img class="flex w-20" src={par.image} alt=""/>
-									{$isParSelected.get(par.id)}
+									<!-- {$isParSelected.get(par.id)} -->
 								{:else if par.image == null}
 									{#if par.nome !=null}
 										{par.nome}
@@ -157,8 +157,8 @@
 							<Card.Content>
 								{#if par.tipo == "configuracao"}
 									<img class="flex w-20" src={par.image} alt=""/>
-									{$isParSelected.get(par.id)}
-									{par.código}
+									<!-- {$isParSelected.get(par.id)} -->
+									<!-- {par.código} -->
 								{:else if par.image == null}
 									{#if par.nome !=null}
 										{par.nome}

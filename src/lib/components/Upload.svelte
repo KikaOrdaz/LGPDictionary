@@ -15,7 +15,7 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme:"", video:""}
-	let folder = {name :"", signs_id:[""]}
+	// let folder = {name :"", signs_id:[""]}
 
 
 	function useToast(){
@@ -70,7 +70,7 @@
 
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
-			sign.theme = folder.name
+			// sign.theme = folder.name
 		}
 
 		
@@ -86,11 +86,11 @@
 			console.log("insertSign - Dataa: " + data[0].id + ": " + typeof data[0].id)
 			//addFolder(data[0].id)
 			let signId = data[0].id + ""
-			if(folder.signs_id.length == 1){
+			/* if(folder.signs_id.length == 1){
 				folder.signs_id[0] = signId
 			} else {
 				folder.signs_id.push(signId)
-			}
+			} */
 		} else {
 			console.log("insertSign - Erro: " + error.message)
 		}
@@ -98,7 +98,7 @@
 	}
 
 
-	async function  addFolder() {
+/* 	async function  addFolder() {
 		console.log("Na função addFolder")
 
 		
@@ -132,7 +132,7 @@
 			console.log("addFolder - Erro: " + error)
 		}
 
-	}
+	} */
 
 	// $: multiple = files.length > 1
 </script>
@@ -178,11 +178,11 @@
 				<Tabs.Content value="folder">
 					<form>
 						<div class="grid w-full items-center gap-4">
-							<div class="flex flex-col space-y-1.5">
+							<!-- <div class="flex flex-col space-y-1.5">
 								<Label for="name">Nome</Label>
 								<Input id="name" placeholder="Nome da pasta" bind:value={folder.name}/>
 							</div>
-			
+			 -->
 							<input type="file" bind:files multiple/>
 
 						</div>
@@ -194,12 +194,12 @@
 		</div>
 		
 		
-		<Dialog.Footer class="flex justify-between">
+		<!-- <Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
 			<Button variant="outline" type="submit" on:click={addFolder} on:click={useToast} >
 				Upload
 			</Button>
-		</Dialog.Footer>
+		</Dialog.Footer> -->
 	</Dialog.Content>
 
 </Dialog.Root>

@@ -11,7 +11,6 @@
     import Line_3Horizontal from '$lib/img/line_3_horizontal.svelte';
     import Sidebar from "$lib/components/Sidebar.svelte"
     import Xmark from '$lib/img/xmark.svelte';
-    import {files} from '$lib/files'
     import Input from '$lib/components/ui/input/input.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { supabase } from "$lib/supabaseClient";
@@ -27,7 +26,6 @@
 	
     export let data: any;
     let numberOfSigns = data.signs.length
-    let currentPlaylist = files[0]
     let signId_params = JSON.parse(JSON.stringify($page.params)).signId
     export let sign = getSignById(+signId_params)
     export let signsAnotation = new Map<number, AnnotationArray>();
@@ -41,7 +39,15 @@
 
     let signStores = new Map<any, any>(); // Map to store separate stores for each sign
 
-
+    if(anotationArray == null){
+        anotationArray = {configuration : [],
+                             movement : [],
+                             location : [],
+                             orientation : [],
+                             expression : [],
+                             theme : []
+        }
+    }
 
     // Create and initialize a separate store for each sign
     data.signs.forEach((sign: any, index: number) => {
@@ -71,8 +77,40 @@
         signStores.set(sign.id, store)
     });
 
+    async function update_is_anotated(sign_id : number) {
+        let is_anotated = 0;
+
+        let sign = getSignById(sign_id)
+
+        if(sign.anotation){
+			if(sign.anotation.theme > 0 &&
+			sign.anotation.location > 0 &&
+			sign.anotation.movement > 0 &&
+			sign.anotation.expression > 0 &&
+			sign.anotation.orientation > 0 &&
+			sign.anotation.configuration > 0){
+                is_anotated = 2
+			} else if (sign.anotation.theme > 0 ||
+			sign.anotation.location > 0 ||
+			sign.anotation.movement > 0 ||
+			sign.anotation.expression > 0 ||
+			sign.anotation.orientation > 0 ||
+			sign.anotation.configuration > 0){
+                is_anotated = 1
+			} 
+		}
+
+        const { data, error } = await supabase
+            .from('signs')
+            // .select()
+            .update({ is_anotated: is_anotated }) // Update with the annotation object
+            .eq('id', sign_id);
 
 
+        console.log("data: ", data, " error: ", error);
+    }
+
+    
 
     
     function getSignById(id : any) {
@@ -87,7 +125,7 @@
         const { data, error } = await supabase
             .from('signs')
             // .select()
-            .update({ anotation: annotation }) // Update with the annotation object
+            .update({ anotation: annotation }) 
             .eq('id', sign_id);
 
 
@@ -102,6 +140,7 @@
                 console.log("1 annotation:", annotation);
                 console.log("key:", key);
                 insertAnotation(annotation, key);
+                update_is_anotated(key)
             }
         });
     } 
@@ -113,13 +152,13 @@
     <div class="flex-none">
         <Sheet.Root>
             <Sheet.Trigger>
-                <!-- <div class="flex flex-col gap-1 items-center">
+                <div class="flex flex-col gap-1 items-center">
                     <Line_3Horizontal />
-                    {anotatedCount}/{folder.signs_id.length}
-                </div> -->
+                    <!-- {anotatedCount}/{folder.signs_id.length} -->
+                </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <!-- <Sidebar playlistId={folderId} data={data} bind:current_sign={current_sign}/>       -->
+                <Sidebar data={data} bind:current_sign={sign}/>      
             </Sheet.Content>
           </Sheet.Root>
     </div>

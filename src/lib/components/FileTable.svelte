@@ -8,7 +8,7 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 	import CheckmarkCircle from '$lib/img/checkmark_circle.svelte';
 	import CheckmarkCircleFill from '$lib/img/checkmark_circle_fill.svelte';
-
+	import { supabase } from "$lib/supabaseClient";
 
 	
 	export let selection: boolean;
@@ -19,7 +19,7 @@
 	function getSignById(id : any) {
     	return data.signs.find((item: { id: any; }) => item.id === id);
   	}
-	  
+
 	  
 	function themeShown(themeName : string){
 		// let themeValue
@@ -30,7 +30,7 @@
 		})
 	}
 
-	themeShown("animais")
+	// themeShown("animais")
 
 
 </script>
@@ -63,8 +63,10 @@
 
 						<a data-sveltekit-reload href='./anotate/{sign.id}'>
 								<Button variant = "ghost">
-									{#if sign.anotated}
+									{#if sign.is_anotated == 2}
 										<PencilCircleFill />
+									{:else if sign.is_anotated == 1}
+										<PencilCircleFill color={"gray"} />
 									{:else}
 										<PencilCircle />
 									{/if}
