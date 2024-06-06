@@ -17,9 +17,28 @@
 	
 	export let data;
 
-	let anotation = {label: "Anotação", options: [{name:"Anotados", show: true}, {name: "Por anotar", show: true}]}
-	let type = {label: "Tipo", options: [{name:"Video", show: true}, {name: "Pasta", show: true}]}
-	let theme = {label: "Tema", options: [{name:"Aulas", show: true}, {name: "Casa", show: true}]}
+	let themes : string[] = []
+	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Por anotar", show: true}]
+	export let theme_options : {name: string, show: boolean}[] = []
+
+	data.signs.forEach((sign: any) => {
+		sign.theme.forEach((theme: string) => {
+			if(!(themes.indexOf(theme) > -1)){
+				themes.push(theme)
+			}
+		})
+	})
+
+
+
+	themes.forEach((theme: string) => {
+		let option = {name: theme, show: true}
+		theme_options.push(option)
+	})
+
+
+	
+	
 
 </script>
 
@@ -52,9 +71,8 @@
 		</div>
 
 		<div class="flex place-items-center">
-			<DropdownButton label = {anotation.label} options={anotation.options}/>
-			<DropdownButton label = {type.label} options={type.options}/>
-			<DropdownButton label = {theme.label} options={theme.options}/>
+			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
+			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
 		</div>
 
 		<div class="flex flex-1 flex-row justify-end">
@@ -70,7 +88,7 @@
 		</div>
 
 	</div>
-	<FileTable selection={selection} data={data}/>
+	<FileTable selection={selection} data={data} bind:theme_options={theme_options}/>
 
 </div>
 

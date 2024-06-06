@@ -4,6 +4,13 @@
    
     export let label: string;
     export let options:{name: string, show: boolean}[];
+
+	function toggleValue(optionName : string){
+		options.forEach((option : any) => {
+			
+		})
+	}
+
 </script>
 
 
@@ -14,7 +21,7 @@
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content class="w-56">
       {#each options as option}
-      <DropdownMenu.CheckboxItem bind:checked={option.show}>
+      <DropdownMenu.CheckboxItem bind:checked={option.show} >
 		{option.name}
 	  </DropdownMenu.CheckboxItem>
       {/each}
