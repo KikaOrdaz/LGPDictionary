@@ -77,41 +77,6 @@
         signStores.set(sign.id, store)
     });
 
-    async function update_is_anotated(sign_id : number) {
-        let is_anotated = 0;
-
-        let sign = getSignById(sign_id)
-
-        if(sign.anotation){
-			if(sign.anotation.theme > 0 &&
-			sign.anotation.location > 0 &&
-			sign.anotation.movement > 0 &&
-			sign.anotation.expression > 0 &&
-			sign.anotation.orientation > 0 &&
-			sign.anotation.configuration > 0){
-                is_anotated = 2
-			} else if (sign.anotation.theme > 0 ||
-			sign.anotation.location > 0 ||
-			sign.anotation.movement > 0 ||
-			sign.anotation.expression > 0 ||
-			sign.anotation.orientation > 0 ||
-			sign.anotation.configuration > 0){
-                is_anotated = 1
-			} 
-		}
-
-        const { data, error } = await supabase
-            .from('signs')
-            // .select()
-            .update({ is_anotated: is_anotated }) // Update with the annotation object
-            .eq('id', sign_id);
-
-
-        console.log("data: ", data, " error: ", error);
-    }
-
-    
-
     
     function getSignById(id : any) {
         return data.signs.find((item: { id: any; }) => item.id === id);
@@ -132,6 +97,34 @@
         console.log("data: ", data, " error: ", error);
     }
 
+    async function update_is_anotated(annotation : AnnotationArray, sign_id : number) {
+        let is_anotated = 0;
+
+        if(annotation.theme.length > 0 &&
+        annotation.location.length > 0 &&
+        annotation.movement.length > 0 &&
+        annotation.expression.length > 0 &&
+        annotation.orientation.length > 0 &&
+        annotation.configuration.length > 0){
+            is_anotated = 2
+        } else if (annotation.theme.length > 0 ||
+        annotation.location.length > 0 ||
+        annotation.movement.length > 0 ||
+        annotation.expression.length > 0 ||
+        annotation.orientation.length > 0 ||
+        annotation.configuration.length > 0){
+            is_anotated = 1
+        } 
+
+        const { data, error } = await supabase
+            .from('signs')
+            // .select()
+            .update({ is_anotated: is_anotated }) // Update with the annotation object
+            .eq('id', sign_id);
+
+        console.log("data: ", data, " error: ", error);
+    }
+
     function endAnotation() {
         console.log("End annotation");
 
@@ -140,7 +133,7 @@
                 console.log("1 annotation:", annotation);
                 console.log("key:", key);
                 insertAnotation(annotation, key);
-                update_is_anotated(key)
+                update_is_anotated(annotation, key)
             }
         });
     } 

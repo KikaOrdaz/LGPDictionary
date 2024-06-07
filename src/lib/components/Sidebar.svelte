@@ -45,7 +45,11 @@
                     {#if current_sign == sign}
                         <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
                             <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
-                                {#if sign.anotated}
+                                {#if sign.is_anotated == 2}
+                                    <Pencil fillColor={"black"}/>
+                                {:else if sign.is_anotated == 1}
+                                    <Pencil fillColor={"gray"} strokeColor={"gray"}/>
+                                {:else if sign.is_anotated == 0}
                                     <Pencil />
                                 {/if}
                             </div>
@@ -53,27 +57,31 @@
                             <div class="flex flex-row items-center justify-center sticky">
                                 {sign.name}
                             </div>
+                            
                             <div class="flex flex-1 pb-2"></div>
                         </Card.Root>
                     {:else}
                         <button on:click={() => changeCurrentSign(sign)}>
                             <Card.Root class="flex flex-col w-60 h-20">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
-                                    {#if sign.anotated}
+                                    {#if sign.is_anotated == 2}
+                                        <Pencil fillColor={"black"}/>
+                                    {:else if sign.is_anotated == 1}
+                                        <Pencil fillColor={"gray"} strokeColor={"gray"}/>
+                                    {:else if sign.is_anotated == 0}
                                         <Pencil />
                                     {/if}
-                                    </div>
+                                </div>
 
                                 <div class="flex flex-row items-center justify-center sticky">
                                     {sign.name}
                                 </div>
+
                                 <div class="flex flex-1 pb-2"></div>
                             </Card.Root>
                         </button>
                     {/if}
-                    
                 </div>
-            
             {/each}
         </div>
     </ScrollArea>
