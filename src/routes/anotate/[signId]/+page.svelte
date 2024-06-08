@@ -279,9 +279,9 @@
 
 
 <div class="fixed bottom-0 right-0 p-3">
-    <a data-sveltekit-reload href="../manage"> 
+    <!-- <a data-sveltekit-reload href="../manage">  -->
         <Button variant="outline" on:click={() => endAnotation()}>
-            Done
+            Guardar
         </Button>
-    </a>
+    <!-- </a> -->
 </div>

@@ -11,7 +11,6 @@
 	import { supabase } from "$lib/supabaseClient";
 
 	
-	export let selection: boolean;
 	export let data: any;
 
 	export let theme_options: any;
@@ -39,42 +38,35 @@
 	<Table.Root>
 		<Table.Body>
 			{#each data.signs as sign}
-				<Table.Row class="content-center">
-					<Table.Cell>
-					{#if !selection}
+			
+			<Table.Row class="content-center">
+				
+						<Table.Cell>
 							<PlayRectangle/>
-					{:else}
-						<Button variant="ghost" on:click={() => {sign.selected = !sign.selected}}>
-							{#if !sign.selected}
-								<CheckmarkCircle />
-							{:else}
-								<CheckmarkCircleFill />
-							{/if}
-						</Button>
-					{/if}
-				</Table.Cell>
+						</Table.Cell>
 						<Table.Cell class="font-medium"> 
-							{sign.name}
+							<a data-sveltekit-reload href='./anotate/{sign.id}'>
+								{sign.name}
+							</a>
 						</Table.Cell>
 						<Table.Cell>
-							{sign.theme}
+							<a data-sveltekit-reload href='./anotate/{sign.id}'>
+								{sign.theme}
+							</a>
 						</Table.Cell>
 						<Table.Cell>{new Date(sign.created_at).toLocaleDateString()}</Table.Cell>
-
-						<a data-sveltekit-reload href='./anotate/{sign.id}'>
-								<Button variant = "ghost">
-									{#if sign.is_anotated == 2}
-										<PencilCircleFill />
-									{:else if sign.is_anotated == 1}
-										<PencilCircleFill color={"gray"} />
-									{:else}
-										<PencilCircle />
-									{/if}
-								</Button>
-						</a>	
-			
-
-						<DropdownMenu.Root>
+						<Table.Cell>
+								<!-- <Button variant = "ghost"> -->
+							{#if sign.is_anotated == 2}
+								<PencilCircleFill color={"#c1e1c1"}/>
+							{:else if sign.is_anotated == 1}
+								<PencilCircleFill color={"#ffdfba"} />
+							{:else}
+								<PencilCircleFill color={"#ffb3ba"}/>
+							{/if}
+								<!-- </Button> -->
+						</Table.Cell>
+						<!-- <DropdownMenu.Root>
 							<DropdownMenu.Trigger> 
 								<Ellipsis/>
 							</DropdownMenu.Trigger>
@@ -86,10 +78,8 @@
 								<DropdownMenu.Item>Detalhes</DropdownMenu.Item>
 							</DropdownMenu.Group>
 							</DropdownMenu.Content>
-						</DropdownMenu.Root>
-						
-
-				</Table.Row>
+						</DropdownMenu.Root> -->	
+					</Table.Row>
 			
 			{/each}
 			

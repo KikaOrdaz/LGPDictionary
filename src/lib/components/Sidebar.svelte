@@ -3,6 +3,7 @@
 	import * as Card from '$lib/components/ui/card';
     import { Separator } from "$lib/components/ui/separator";
     import Pencil from "$lib/img/pencil.svelte"
+    import PencilCircleFill from "$lib/img/pencil_circle_fill.svelte";
 
 
     export let data: any;
@@ -34,8 +35,7 @@
     </div>
     <div class="flex flex-row items-center justify-start gap-2 pb-2 text-sm">
         {anotatedCount}/{playlist.signs_id.length} anotados
-    </div>
- -->
+    </div> -->
     <Separator />
     
     <ScrollArea class= "flex flex-row py-5">
@@ -46,11 +46,11 @@
                         <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
                             <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                 {#if sign.is_anotated == 2}
-                                    <Pencil fillColor={"black"}/>
+                                    <PencilCircleFill color={"#baffc9"}/>
                                 {:else if sign.is_anotated == 1}
-                                    <Pencil fillColor={"gray"} strokeColor={"gray"}/>
+                                    <PencilCircleFill color={"#ffdfba"}/>
                                 {:else if sign.is_anotated == 0}
-                                    <Pencil />
+                                    <PencilCircleFill color={"#ffadad"}/>
                                 {/if}
                             </div>
 
@@ -65,12 +65,12 @@
                             <Card.Root class="flex flex-col w-60 h-20">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                     {#if sign.is_anotated == 2}
-                                        <Pencil fillColor={"black"}/>
-                                    {:else if sign.is_anotated == 1}
-                                        <Pencil fillColor={"gray"} strokeColor={"gray"}/>
-                                    {:else if sign.is_anotated == 0}
-                                        <Pencil />
-                                    {/if}
+                                    <PencilCircleFill color={"#c1e1c1"}/>
+                                {:else if sign.is_anotated == 1}
+                                    <PencilCircleFill color={"#ffdfba"}/>
+                                {:else if sign.is_anotated == 0}
+                                    <PencilCircleFill color={"#ffb3ba"}/>
+                                {/if}
                                 </div>
 
                                 <div class="flex flex-row items-center justify-center sticky">

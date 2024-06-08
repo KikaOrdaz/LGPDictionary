@@ -52,8 +52,8 @@
 				</div>
 			</form>
 		</div>
-		<div class = "flex flex-1 justify-end gap-3">
-			<Button variant="outline" on:click={toggleSelection}>
+		<div class = "flex flex-1 justify-end gap-5">
+			<!-- <Button variant="outline" on:click={toggleSelection}>
 				{#if !selection}
 					<CheckmarkCircle />
 				{:else}
@@ -61,7 +61,7 @@
 				{/if}
 				
 			</Button>
-
+ -->
 			<Upload database={data}/>
 		</div>
 	</div>
@@ -70,25 +70,18 @@
 		<div class="flex flex-1">
 		</div>
 
-		<div class="flex place-items-center">
+		<div class="flex place-items-center gap-3">
 			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
 			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
 		</div>
 
 		<div class="flex flex-1 flex-row justify-end">
-			{#if selection}
-				<Button variant="outline">
-					Anotar todos selecionados
-				</Button>
-				<Button variant="outline" size="icon">
-					<Trash />
-				</Button>
-			{/if}
+			<!--  -->
 
 		</div>
 
 	</div>
-	<FileTable selection={selection} data={data} bind:theme_options={theme_options}/>
+	<FileTable data={data} bind:theme_options={theme_options}/>
 
 </div>
 

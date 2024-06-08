@@ -8,13 +8,14 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
 	import * as Tabs from "$lib/components/ui/tabs";
+	import { AuthInvalidCredentialsError } from '@supabase/supabase-js';
 	
 	export let database: any;
 	
 	let stroke = 'black';
 	let open = false;
 	let files: FileList
-	let sign = {name :"", theme:"", video:""}
+	let sign = {name :"", theme:[], video:""}
 	// let folder = {name :"", signs_id:[""]}
 
 
@@ -68,10 +69,15 @@
 
 		sign.video = await getVideoURL();
 
+		console.log("temos link: " + sign.video)
+
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
-			// sign.theme = folder.name
+			sign.theme =  []
 		}
+
+		console.log("temos nome: " + sign.name)
+
 
 		
 		const { data, error } = await supabase
@@ -80,17 +86,13 @@
 			sign,
 		])
 		.select()
+
+		console.log("não deu o berro")
+
 		
 		
 		if(data) {
-			console.log("insertSign - Dataa: " + data[0].id + ": " + typeof data[0].id)
-			//addFolder(data[0].id)
-			let signId = data[0].id + ""
-			/* if(folder.signs_id.length == 1){
-				folder.signs_id[0] = signId
-			} else {
-				folder.signs_id.push(signId)
-			} */
+			console.log("insertSign - Dataa: " + data)		
 		} else {
 			console.log("insertSign - Erro: " + error.message)
 		}
@@ -98,41 +100,21 @@
 	}
 
 
-/* 	async function  addFolder() {
-		console.log("Na função addFolder")
+	async function  addVideos() {
+		console.log("Na função addVideos")
 
 		
 		for (let i = 0; i < files.length; ++i){
 			console.log("index: " +  i)
 			
+			console.log("toca a uploadar")
 			uploadVideo(i)
+			console.log("deu o upload, vai a bd")
 			insertSign(i)
-		}
-		
-		
-		if(folder.name == ""){
-			
-			let uploadNumber = database.folders.length + 1
-			folder.name = "Upload "+uploadNumber
-			console.log("uploadNumber: " + uploadNumber)
-		}
-		
-		console.log("Add folder: " + folder)
-		
-		const { data, error } = await supabase
-		.from('folders')
-		.insert([
-			folder
-		])
-		.select()
-		
-		if(data) {
-			console.log("addFolder - Dataa: " + data)
-		} else {
-			console.log("addFolder - Erro: " + error)
+			console.log("inseriu")
 		}
 
-	} */
+	}
 
 	// $: multiple = files.length > 1
 </script>
@@ -152,7 +134,20 @@
 			<Dialog.Description>Fazer upload de um só gesto ou de uma pasta.</Dialog.Description>
 		</Dialog.Header>
 		<div class="w-fit items-center">
-			<Tabs.Root value="sign" class="w-[400px]">
+			<form>
+				<div class="grid w-full items-center gap-4">
+					<div class="flex flex-col space-y-1.5">
+						<Label for="name">Nome</Label>
+						<!-- <Input id="name" placeholder="Nome da pasta" bind:value={folder.name}/> -->
+					</div>
+	
+					<input type="file" bind:files multiple/>
+
+				</div>
+			</form>
+
+
+			<!-- <Tabs.Root value="sign" class="w-[400px]">
 				<Tabs.List >
 				  <Tabs.Trigger value="sign">Gesto</Tabs.Trigger>
 				  <Tabs.Trigger value="folder">Pasta</Tabs.Trigger>
@@ -178,28 +173,28 @@
 				<Tabs.Content value="folder">
 					<form>
 						<div class="grid w-full items-center gap-4">
-							<!-- <div class="flex flex-col space-y-1.5">
+							<div class="flex flex-col space-y-1.5">
 								<Label for="name">Nome</Label>
 								<Input id="name" placeholder="Nome da pasta" bind:value={folder.name}/>
 							</div>
-			 -->
+			
 							<input type="file" bind:files multiple/>
 
 						</div>
 					</form>
 				</Tabs.Content>
-			  </Tabs.Root>
+			  </Tabs.Root> -->
 
 			
 		</div>
 		
 		
-		<!-- <Dialog.Footer class="flex justify-between">
+		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={addFolder} on:click={useToast} >
+			<Button variant="outline" type="submit" on:click={addVideos} on:click={useToast} >
 				Upload
 			</Button>
-		</Dialog.Footer> -->
+		</Dialog.Footer>
 	</Dialog.Content>
 
 </Dialog.Root>
