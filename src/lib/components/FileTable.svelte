@@ -10,10 +10,12 @@
 	export let theme_options: any;
 	  
 	function themeShown(themeName : string[], options : any) : boolean{
+
 		let themeValue = false
+
 		options.forEach((option : any) => {
 			if(themeName.includes(option.name)){
-				themeValue = option.show
+				themeValue = themeValue || option.show
 			}
 		})
 
