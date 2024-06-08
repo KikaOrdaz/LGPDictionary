@@ -5,12 +5,6 @@
     export let label: string;
     export let options:{name: string, show: boolean}[];
 
-	function toggleValue(optionName : string){
-		options.forEach((option : any) => {
-			
-		})
-	}
-
 </script>
 
 

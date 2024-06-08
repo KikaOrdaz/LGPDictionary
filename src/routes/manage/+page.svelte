@@ -1,19 +1,8 @@
 <script lang="ts">
 	import FileTable from '../../lib/components/FileTable.svelte';
-	import { Button } from '$lib/components/ui/button';
 	import Upload from '../../lib/components/Upload.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import DropdownButton from '$lib/components/DropdownButton.svelte';
-	import CheckmarkCircle from '$lib/img/checkmark_circle.svelte';
-	import CheckmarkCircleFill from '$lib/img/checkmark_circle_fill.svelte';
-	import Trash from '../../lib/img/trash.svelte'
-	
-
-	let selection = false;
-	
-	function toggleSelection(){
-		selection = !selection;
-	}
 	
 	export let data;
 
@@ -28,18 +17,13 @@
 			}
 		})
 	})
-
-
-
+	
+	
 	themes.forEach((theme: string) => {
 		let option = {name: theme, show: true}
 		theme_options.push(option)
 	})
-
-
-	
-	
-
+		
 </script>
 
 <div class="flex flex-col pt-10" >
@@ -53,34 +37,22 @@
 			</form>
 		</div>
 		<div class = "flex flex-1 justify-end gap-5">
-			<!-- <Button variant="outline" on:click={toggleSelection}>
-				{#if !selection}
-					<CheckmarkCircle />
-				{:else}
-					<CheckmarkCircleFill/>
-				{/if}
-				
-			</Button>
- -->
 			<Upload database={data}/>
 		</div>
 	</div>
 
 	<div class="flex flex-row px-3 pb-5 justify-between items-center gap-2">
-		<div class="flex flex-1">
-		</div>
+		<div class="flex flex-1"></div>
 
 		<div class="flex place-items-center gap-3">
 			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
 			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
 		</div>
 
-		<div class="flex flex-1 flex-row justify-end">
-			<!--  -->
-
-		</div>
+		<div class="flex flex-1 flex-row justify-end"></div>
 
 	</div>
+
 	<FileTable data={data} bind:theme_options={theme_options}/>
 
 </div>
