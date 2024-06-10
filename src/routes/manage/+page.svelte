@@ -3,12 +3,13 @@
 	import Upload from '../../lib/components/Upload.svelte';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import DropdownButton from '$lib/components/DropdownButton.svelte';
-	
+	import { writable } from 'svelte/store';	
 	export let data;
 
 	let themes : string[] = []
-	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Por anotar", show: true}]
+	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
+
 
 	data.signs.forEach((sign: any) => {
 		sign.theme.forEach((theme: string) => {

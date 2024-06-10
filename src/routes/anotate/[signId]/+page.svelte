@@ -138,8 +138,45 @@
         });
     } 
 
-</script>
+    let tab_colors = {configuracao :"configuracao:",
+                    movimento :"movimento:",
+                    localizacao :"localizacao:",
+                    orientacao :"orientacao:",
+                    expressoes :"expressoes:",
+                    tema :"tema:"}
 
+    if (anotationArray.configuration.length > 0){
+        tab_colors.configuracao += "2"
+        } else {
+        tab_colors.configuracao += "0"
+    }
+    if (anotationArray.movement.length > 0){
+        tab_colors.movimento += "2"
+        } else {
+        tab_colors.movimento += "0"
+    }
+    if (anotationArray.location.length > 0){
+        tab_colors.localizacao += "2"
+        } else {
+        tab_colors.localizacao += "0"
+    }
+    if (anotationArray.orientation.length > 0){
+        tab_colors.orientacao += "2"
+        } else {
+        tab_colors.orientacao += "0"
+    }
+    if (anotationArray.expression.length > 0){
+        tab_colors.expressoes += "2"
+        } else {
+        tab_colors.expressoes += "0"
+    }
+    if (anotationArray.theme.length > 0){
+        tab_colors.tema += "2"
+        } else {
+        tab_colors.tema += "0"
+    }
+
+</script>
 
 <div class="flex flex-row px-5 pt-5 sticky top-0">
     <div class="flex-none">
@@ -189,16 +226,16 @@
 
 
     {sign.name}
-    
+
     <div class="flex place-items-center">
         <Tabs.Root value="configuracao" class="">
             <Tabs.List>
-                <Tabs.Trigger value="configuracao">Configuração</Tabs.Trigger>
-                <Tabs.Trigger value="movimento">Movimento</Tabs.Trigger>
-                <Tabs.Trigger value="localizacao">Localização</Tabs.Trigger>
-                <Tabs.Trigger value="orientacao">Orientação</Tabs.Trigger>
-                <Tabs.Trigger value="expressoes">Expressões</Tabs.Trigger>
-                <Tabs.Trigger value="tema">Tema</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.configuracao}>Configuração</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.movimento}>Movimento</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.localizacao}>Localização</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.orientacao}>Orientação</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.expressoes}>Expressões</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.tema}>Tema</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
                     <ParametersOptions data={data} 
