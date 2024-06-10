@@ -15,11 +15,11 @@
 
 	value =  substrings[0]
 
-	let color = "data-[state=inactive]:bg-[#ffb3ba]"
+	let color = "data-[state=inactive]:text-[#ffb3ba]"
 	if(complete == "1") {
-		color = "data-[state=inactive]:bg-[#ffdfba]"
+		color = "data-[state=inactive]:text-[#ffdfba]"
 	} else if(complete == "2") {
-		color = "data-[state=inactive]:bg-[#c1e1c1]"
+		color = "data-[state=inactive]:text-[#c1e1c1]"
 	}
 </script>
 
