@@ -36,6 +36,40 @@
 		theme_options.push(option)
 	})
     
+    function themeShown(themeName : string[], options : any) : boolean{
+
+        let themeValue = false
+
+        options.forEach((option : any) => {
+            if(themeName.includes(option.name)){
+                themeValue = themeValue || option.show
+            }
+        })
+
+        return themeValue
+    }
+
+    function anotationShown(anotation : number, options : any) : boolean{
+
+        let anotationValue = false
+        let anotation_name = "Por anotar"
+
+        if(anotation == 1){
+            anotation_name = "Anotação não terminada"
+        } else if(anotation == 2){
+            anotation_name = "Anotados"
+        }
+
+
+        options.forEach((option : any) => {
+            if(anotation_name == option.name){
+                anotationValue = anotationValue || option.show
+            }
+        })
+
+        return anotationValue
+    }
+
 </script>
 
   
@@ -50,47 +84,50 @@
     <ScrollArea class= "flex flex-row py-5">
         <div class="flex flex-col items-center gap-7">
             {#each data.signs as sign}
-                <div class="flex flex-col gap-1 items-center">
-                    {#if current_sign == sign}
-                        <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
-                            <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
-                                {#if sign.is_anotated == 2}
-                                    <PencilCircleFill color={"#baffc9"}/>
-                                {:else if sign.is_anotated == 1}
-                                    <PencilCircleFill color={"#ffdfba"}/>
-                                {:else if sign.is_anotated == 0}
-                                    <PencilCircleFill color={"#ffadad"}/>
-                                {/if}
-                            </div>
-
-                            <div class="flex flex-row items-center justify-center sticky">
-                                {sign.name}
-                            </div>
-                            
-                            <div class="flex flex-1 pb-2"></div>
-                        </Card.Root>
-                    {:else}
-                        <button on:click={() => changeCurrentSign(sign)}>
-                            <Card.Root class="flex flex-col w-60 h-20">
+                {#if themeShown(sign.theme, theme_options) && anotationShown(sign.is_anotated, anotation_options)}
+                    <div class="flex flex-col gap-1 items-center">
+                        {#if current_sign == sign}
+                            <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                     {#if sign.is_anotated == 2}
-                                    <PencilCircleFill color={"#c1e1c1"}/>
-                                {:else if sign.is_anotated == 1}
-                                    <PencilCircleFill color={"#ffdfba"}/>
-                                {:else if sign.is_anotated == 0}
-                                    <PencilCircleFill color={"#ffb3ba"}/>
-                                {/if}
+                                        <PencilCircleFill color={"#baffc9"}/>
+                                    {:else if sign.is_anotated == 1}
+                                        <PencilCircleFill color={"#ffdfba"}/>
+                                    {:else if sign.is_anotated == 0}
+                                        <PencilCircleFill color={"#ffadad"}/>
+                                    {/if}
                                 </div>
 
                                 <div class="flex flex-row items-center justify-center sticky">
                                     {sign.name}
                                 </div>
-
+                                
                                 <div class="flex flex-1 pb-2"></div>
                             </Card.Root>
-                        </button>
-                    {/if}
-                </div>
+                        {:else}
+                            <button on:click={() => changeCurrentSign(sign)}>
+                                <Card.Root class="flex flex-col w-60 h-20">
+                                    <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
+                                        {#if sign.is_anotated == 2}
+                                        <PencilCircleFill color={"#c1e1c1"}/>
+                                    {:else if sign.is_anotated == 1}
+                                        <PencilCircleFill color={"#ffdfba"}/>
+                                    {:else if sign.is_anotated == 0}
+                                        <PencilCircleFill color={"#ffb3ba"}/>
+                                    {/if}
+                                    </div>
+
+                                    <div class="flex flex-row items-center justify-center sticky">
+                                        {sign.name}
+                                    </div>
+
+                                    <div class="flex flex-1 pb-2"></div>
+                                </Card.Root>
+                            </button>
+                        {/if}
+                    </div>
+                {/if}
+                    
             {/each}
         </div>
     </ScrollArea>

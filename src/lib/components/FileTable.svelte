@@ -8,6 +8,7 @@
 	export let data: any;
 
 	export let theme_options: any;
+	export let anotation_options: any;
 	  
 	function themeShown(themeName : string[], options : any) : boolean{
 
@@ -22,13 +23,34 @@
 		return themeValue
 	}
 
+	function anotationShown(anotation : number, options : any) : boolean{
+
+		let anotationValue = false
+		let anotation_name = "Por anotar"
+
+		if(anotation == 1){
+			anotation_name = "Anotação não terminada"
+		} else if(anotation == 2){
+			anotation_name = "Anotados"
+		}
+ 	
+ 	
+		options.forEach((option : any) => {
+			if(anotation_name == option.name){
+				anotationValue = anotationValue || option.show
+			}
+		})
+
+		return anotationValue
+	}
+
 </script>
 
 <div class="px-10">
 	<Table.Root>
 		<Table.Body>
 			{#each data.signs as sign}
-				{#if themeShown(sign.theme, theme_options)}
+				{#if themeShown(sign.theme, theme_options) && anotationShown(sign.is_anotated, anotation_options)}
 					<Table.Row class="cursor-pointer content-center" on:click={() => goto('./anotate/'+sign.id)}>
 						<Table.Cell>
 							<PlayRectangle/>

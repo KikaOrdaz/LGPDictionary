@@ -5,6 +5,7 @@
 	import DropdownButton from '$lib/components/DropdownButton.svelte';
 	import { writable } from 'svelte/store';	
 	export let data;
+	import DropdownRadioButton from '$lib/components/DropdownRadioButton.svelte'
 
 	let themes : string[] = []
 	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
@@ -48,13 +49,15 @@
 		<div class="flex place-items-center gap-3">
 			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
 			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
+			<DropdownRadioButton />
+			
 		</div>
 
 		<div class="flex flex-1 flex-row justify-end"></div>
 
 	</div>
 
-	<FileTable data={data} bind:theme_options={theme_options}/>
+	<FileTable data={data} bind:theme_options={theme_options} bind:anotation_options={anotation_options}/>
 
 </div>
 
