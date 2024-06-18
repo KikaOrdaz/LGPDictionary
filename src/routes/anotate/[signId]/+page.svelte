@@ -33,7 +33,26 @@
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
     let database_ann_array : Array<number>
+     let themes : string[] = []
 
+    export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
+	export let theme_options : {name: string, show: boolean}[] = []
+
+	data.signs.forEach((sign: any) => {
+		sign.theme.forEach((theme: string) => {
+			if(!(themes.indexOf(theme) > -1)){
+				themes.push(theme)
+			}
+		})
+	})
+
+
+    themes.forEach((theme: string) => {
+		let option = {name: theme, show: true}
+		theme_options.push(option)
+	})
+    
+   
     // $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
     $: current_video = sign.video
 
@@ -188,7 +207,7 @@
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <Sidebar data={data} bind:current_sign={sign}/>      
+                <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>      
             </Sheet.Content>
           </Sheet.Root>
     </div>

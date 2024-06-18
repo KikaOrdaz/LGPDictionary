@@ -2,7 +2,7 @@
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
     import { Button } from "$lib/components/ui/button/index.js";
    
-    let order = "Data de Última Alteração";
+    export let order = "last_altered";
 
     /**
      * ultima alteração 
@@ -12,6 +12,7 @@
     */
   </script>
    
+
   <DropdownMenu.Root>
     <DropdownMenu.Trigger asChild let:builder>
       <Button variant="outline" builders={[builder]}>Ordenação</Button>

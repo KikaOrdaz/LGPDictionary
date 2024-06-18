@@ -10,6 +10,7 @@
 	let themes : string[] = []
 	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
+	export let order : string;
 
 
 	data.signs.forEach((sign: any) => {
@@ -25,7 +26,9 @@
 		let option = {name: theme, show: true}
 		theme_options.push(option)
 	})
-		
+
+
+
 </script>
 
 <div class="flex flex-col pt-10" >
@@ -49,7 +52,7 @@
 		<div class="flex place-items-center gap-3">
 			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
 			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
-			<DropdownRadioButton />
+			<DropdownRadioButton bind:order={order}/>
 			
 		</div>
 
