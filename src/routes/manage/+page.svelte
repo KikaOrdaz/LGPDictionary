@@ -37,7 +37,7 @@
 		<div class = "w-8/12 ">
 			<form>
 				<div class="relative">
-					<Input placeholder="Search" class="pl-8"/>
+					<Input placeholder="Pesquisa" class="pl-8"/>
 				</div>
 			</form>
 		</div>
@@ -50,8 +50,8 @@
 		<div class="flex flex-1"></div>
 
 		<div class="flex place-items-center gap-3">
-			<DropdownButton label = {"Anotação"} bind:options={anotation_options}/>
-			<DropdownButton label = {"Temas"} bind:options={theme_options}/>
+			<DropdownButton label = {"Filtrar Por Anotação"} bind:options={anotation_options}/>
+			<DropdownButton label = {"Filtrar por Temas"} bind:options={theme_options}/>
 			<DropdownRadioButton bind:order={order}/>
 			
 		</div>

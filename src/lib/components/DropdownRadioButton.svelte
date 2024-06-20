@@ -15,7 +15,7 @@
 
   <DropdownMenu.Root>
     <DropdownMenu.Trigger asChild let:builder>
-      <Button variant="outline" builders={[builder]}>Ordenação</Button>
+      <Button variant="outline" builders={[builder]}>Ordenar</Button>
     </DropdownMenu.Trigger>
     <DropdownMenu.Content class="w-56">
       <DropdownMenu.RadioGroup bind:value={order}>
