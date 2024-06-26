@@ -243,18 +243,22 @@
 
     </div>
 
+    <div class="flex flex-col items-center">
+        {sign.name}
 
-    {sign.name}
+        <div class="flex flex-row text-sm">
+            {sign.theme}
+        </div>
+    </div>
 
-    <div class="flex place-items-center">
+    <div class="flex placeitems-center">
         <Tabs.Root value="configuracao" class="">
-            <Tabs.List>
+            <Tabs.List class="">
                 <Tabs.Trigger value={tab_colors.configuracao}>Configuração</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.movimento}>Movimento</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.localizacao}>Localização</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.orientacao}>Orientação</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.expressoes}>Expressões</Tabs.Trigger>
-                <Tabs.Trigger value={tab_colors.tema}>Tema</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
                     <ParametersOptions data={data} 
@@ -280,6 +284,23 @@
                                         bind:signsAnotation={signsAnotation} 
                                         bind:sign={sign}
                                         />
+                                        <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
+                                            <form>
+                                                <div class="flex relative w-40">
+                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                </div>
+                                            </form>
+                                            <form>
+                                                <div class="flex relative w-40">
+                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                </div>
+                                            </form>
+                                            <form>
+                                                <div class="flex relative w-40">
+                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                </div>
+                                            </form>
+                                        </div>
             </Tabs.Content>
             <Tabs.Content value="localizacao">
                     <ParametersOptions data={data} 
@@ -292,7 +313,7 @@
             </Tabs.Content>
             <Tabs.Content value="orientacao">
                     <ParametersOptions data={data} 
-                                        currentTab={"orientacao"} 
+                                        currentTab={"orientação"} 
                                         bind:anotationArray={anotationArray} 
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 
@@ -313,16 +334,7 @@
             </Tabs.Content>
             <Tabs.Content value="expressoes">
                     <ParametersOptions data={data} 
-                                        currentTab={"expressoes"} 
-                                        bind:anotationArray={anotationArray} 
-                                        isParSelected={signStores.get(sign.id)} 
-                                        bind:signsAnotation={signsAnotation} 
-                                        bind:sign={sign}
-                                        />
-            </Tabs.Content>
-            <Tabs.Content value="tema">
-                    <ParametersOptions data={data} 
-                                        currentTab={"tema"} 
+                                        currentTab={"expressao facial"} 
                                         bind:anotationArray={anotationArray} 
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 

@@ -87,7 +87,7 @@
                 {#if themeShown(sign.theme, theme_options) && anotationShown(sign.is_anotated, anotation_options)}
                     <div class="flex flex-col gap-1 items-center">
                         {#if current_sign == sign}
-                            <Card.Root class="flex flex-col w-60  h-20" style="border: 2px solid #0096FF;">
+                            <Card.Root class="flex flex-col w-60  h-24" style="border: 2px solid #0096FF;">
                                 <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
                                     {#if sign.is_anotated == 2}
                                         <PencilCircleFill color={"#c1e1c1"}/>
@@ -98,16 +98,21 @@
                                     {/if}
                                 </div>
 
-                                <div class="flex flex-row items-center justify-center sticky">
-                                    {sign.name}
+                                <div class="flex flex-col items-center justify-center sticky"> 
+                                        <div>
+                                            {sign.name}
+                                        </div>
+                                        <div class="text-xs font-semibold">
+                                            {sign.theme}
+                                        </div>
                                 </div>
                                 
                                 <div class="flex flex-1 pb-2"></div>
                             </Card.Root>
                         {:else}
                             <button on:click={() => changeCurrentSign(sign)}>
-                                <Card.Root class="flex flex-col w-60 h-20">
-                                    <div class="flex flex-1 flex-row justify-end pt-2 pe-2">
+                                <Card.Root class="flex flex-col w-60 h-24">
+                                    <div class="flex flex-1 flex-row justify-end pt-2 pe-2 sticky">
                                         {#if sign.is_anotated == 2}
                                         <PencilCircleFill color={"#c1e1c1"}/>
                                     {:else if sign.is_anotated == 1}
@@ -117,11 +122,18 @@
                                     {/if}
                                     </div>
 
-                                    <div class="flex flex-row items-center justify-center sticky">
-                                        {sign.name}
+                                    <div class="flex flex-grow flex-col">
+                                        <div>
+                                            {sign.name}
+                                        </div>
+                                        <div class="text-xs font-semibold">
+                                            {sign.theme}
+                                        </div>
+                        
                                     </div>
-
+                                    
                                     <div class="flex flex-1 pb-2"></div>
+
                                 </Card.Root>
                             </button>
                         {/if}
