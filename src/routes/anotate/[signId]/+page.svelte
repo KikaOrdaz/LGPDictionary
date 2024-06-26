@@ -2,8 +2,6 @@
     import { page } from '$app/stores';
 	import * as Card from '$lib/components/ui/card';
 	import PlayFill from '$lib/img/play_fill.svelte';
-	import ChevronRight from '$lib/img/chevron_right.svelte';
-	import ChevronLeft from '$lib/img/chevron_left.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import ParametersOptions from '$lib/components/ParametersOptions.svelte';
@@ -14,6 +12,10 @@
     import Input from '$lib/components/ui/input/input.svelte';
 	import { writable, type Writable } from 'svelte/store';
 	import { supabase } from "$lib/supabaseClient";
+    import Pencil from '$lib/img/pencil.svelte';
+    import Checkmark from '$lib/img/checkmark.svelte'
+    import DropdownButton from '$lib/components/DropdownButton.svelte';
+
 
     type AnnotationArray = {
 		configuration: any[];
@@ -25,10 +27,10 @@
 	}
 	
     export let data: any;
-    let numberOfSigns = data.signs.length
     let signId_params = JSON.parse(JSON.stringify($page.params)).signId
     export let sign = getSignById(+signId_params)
     export let signsAnotation = new Map<number, AnnotationArray>();
+    let edit_mode = false
     
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
@@ -37,6 +39,7 @@
 
     export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
+	export let theme_edit_options : {name: string, show: boolean}[] = []
 
 	data.signs.forEach((sign: any) => {
 		sign.theme.forEach((theme: string) => {
@@ -50,6 +53,11 @@
     themes.forEach((theme: string) => {
 		let option = {name: theme, show: true}
 		theme_options.push(option)
+	})
+    
+    themes.forEach((theme: string) => {
+		let option = {name: theme, show: (sign.theme.includes(theme))}
+		theme_edit_options.push(option)
 	})
     
    
@@ -87,8 +95,6 @@
         data.parameters.forEach((par: { id: any; }) => {
             store.update(map => {
                 const newMap = new Map(map);
-
-                // newMap.set(par.id, false);
                 newMap.set(par.id, database_ann_array.includes(par.id));
                 return newMap;
             }); 
@@ -195,6 +201,10 @@
         tab_colors.tema += "0"
     }
 
+    function toggleEdit(){
+        edit_mode = !edit_mode
+    }
+
 </script>
 
 <div class="flex flex-row px-5 pt-5 sticky top-0">
@@ -244,10 +254,34 @@
     </div>
 
     <div class="flex flex-col items-center">
-        {sign.name}
 
+        
+        
+        <div class="flex flex-row gap-2 items-center">
+            <div class="flex flex-1">
+            </div>
+            <div class="flex">
+                {#if edit_mode}
+                    <Input placeholder={sign.name} />
+                {:else}
+                    {sign.name}
+                {/if}
+            </div>
+            <button class="flex flex-1" on:click={toggleEdit}>
+                {#if edit_mode}
+                    <Checkmark />
+                {:else}
+                    <Pencil />
+                {/if}
+            </button>
+        </div>
         <div class="flex flex-row text-sm">
-            {sign.theme}
+            {#if edit_mode}
+             <DropdownButton label = {sign.theme} bind:options={theme_edit_options} edit_mode={edit_mode}/>
+
+            {:else}
+                {sign.theme}
+            {/if}
         </div>
     </div>
 
