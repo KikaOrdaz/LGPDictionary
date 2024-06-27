@@ -39,8 +39,35 @@
 
     let new_name : string = ""
 
-    // let written_anotation = {configuration: "", movement: [], orientation: [], }
+    let written_anotation = {configuration: "", movement: ["","",""], orientation: ["",""]}
 
+    if (sign.written_anotation != null){
+        written_anotation = sign.written_anotation
+    }
+
+    let written_anotation_placeholder = written_anotation
+
+    // written_anotation_placeholder.configuration == "" ? written_anotation_placeholder.configuration : "Anotação" 
+
+    if(written_anotation_placeholder.configuration == ""){
+        written_anotation_placeholder.configuration = "Anotação"
+    }
+    if(written_anotation_placeholder.orientation[0] == ""){
+        written_anotation_placeholder.orientation[0] = "Anotação"
+    }
+    if(written_anotation_placeholder.orientation[1] == ""){
+        written_anotation_placeholder.orientation[1] = "Anotação"
+    }
+    if(written_anotation_placeholder.movement[0] == ""){
+        written_anotation_placeholder.movement[0] = "Anotação"
+    }
+    if(written_anotation_placeholder.movement[1] == ""){
+        written_anotation_placeholder.movement[1] = "Anotação"
+    }
+    if(written_anotation_placeholder.movement[2] == ""){
+        written_anotation_placeholder.movement[2] = "Anotação"
+    }
+    
     export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
 	export let theme_edit_options : {name: string, show: boolean}[] = []
@@ -113,8 +140,7 @@
     
   
     async function insertAnotation(annotation: AnnotationArray, sign_id: number) {
-        console.log("2 annotation: ", annotation);
-        console.log("sign_id: ", sign_id);
+    
 
         const { data, error } = await supabase
             .from('signs')
@@ -167,6 +193,20 @@
         console.log("data: ", data, " error: ", error);
     }
 
+    async function insertWrittenAnotation(written_anotation: {configuration: string, movement : string[], orientation: string[]}, sign_id: number) {
+    
+
+    const { data, error } = await supabase
+        .from('signs')
+        // .select()
+        .update({ written_anotation: written_anotation }) 
+        .eq('id', sign_id);
+
+
+    console.log("data: ", data, " error: ", error);
+}
+
+
     function endAnotation() {
         console.log("End annotation");
 
@@ -178,6 +218,8 @@
                 update_is_anotated(annotation, key)
             }
         });
+
+        insertWrittenAnotation(written_anotation, sign.id)
     } 
 
     let tab_colors = {configuracao :"configuracao:",
@@ -348,7 +390,7 @@
                     <div class="flex flex-row sticky justify-center pt-8 bottom-4">
                         <form>
                             <div class="flex relative w-60">
-                                <Input placeholder="Anotação" class="pl-8"/>
+                                <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.configuration}/>
                             </div>
                         </form>
                     </div>
@@ -364,17 +406,17 @@
                                         <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                                             <form>
                                                 <div class="flex relative w-40">
-                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                    <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[0]}/>
                                                 </div>
                                             </form>
                                             <form>
                                                 <div class="flex relative w-40">
-                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                    <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[1]}/>
                                                 </div>
                                             </form>
                                             <form>
                                                 <div class="flex relative w-40">
-                                                    <Input placeholder="Anotação" class="pl-8"/>
+                                                    <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[2]}/>
                                                 </div>
                                             </form>
                                         </div>
@@ -399,12 +441,12 @@
                     <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                         <form>
                             <div class="flex relative w-60">
-                                <Input placeholder="Anotação" class="pl-8"/>
+                                <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[0]}/>
                             </div>
                         </form>
                         <form>
                             <div class="flex relative w-60">
-                                <Input placeholder="Anotação" class="pl-8"/>
+                                <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[1]}/>
                             </div>
                         </form>
                     </div>
