@@ -12,7 +12,6 @@
 		location: any[];
 		orientation: any[];
 		expression: any[];
-		theme: any[];
 	}
 
 	export let data: any;
@@ -100,15 +99,6 @@
 				break;
 			}
 			
-			case "tema":{
-				if(!isSelected){
-					anotationArray.theme.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-				} else {
-					anotationArray.theme = anotationArray.theme.filter((e, i) => i !== anotationArray.theme.indexOf(id)); 
-				}
-				break;
-			}
 		}
 	}
 	

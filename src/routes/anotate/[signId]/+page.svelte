@@ -23,8 +23,7 @@
 		location: any[];
 		orientation: any[];
 		expression: any[];
-		theme: any[];
-	}
+    }
 	
     export let data: any;
     let signId_params = JSON.parse(JSON.stringify($page.params)).signId
@@ -102,8 +101,7 @@
                              movement : [],
                              location : [],
                              orientation : [],
-                             expression : [],
-                             theme : []
+                             expression : []
         }
     }
 
@@ -168,15 +166,13 @@
     async function update_is_anotated(annotation : AnnotationArray, sign_id : number) {
         let is_anotated = 0;
 
-        if(annotation.theme.length > 0 &&
-        annotation.location.length > 0 &&
+        if(annotation.location.length > 0 &&
         annotation.movement.length > 0 &&
         annotation.expression.length > 0 &&
         annotation.orientation.length > 0 &&
         annotation.configuration.length > 0){
             is_anotated = 2
-        } else if (annotation.theme.length > 0 ||
-        annotation.location.length > 0 ||
+        } else if (annotation.location.length > 0 ||
         annotation.movement.length > 0 ||
         annotation.expression.length > 0 ||
         annotation.orientation.length > 0 ||
@@ -253,11 +249,6 @@
         tab_colors.expressoes += "2"
         } else {
         tab_colors.expressoes += "0"
-    }
-    if (anotationArray.theme.length > 0){
-        tab_colors.tema += "2"
-        } else {
-        tab_colors.tema += "0"
     }
 
     function toggleEdit(){

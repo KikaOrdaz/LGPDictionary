@@ -12,7 +12,7 @@
 	let stroke = 'black';
 	let open = false;
 	let files: FileList
-	let sign = {name :"", theme:[], video:""}
+	let sign = {name :"", theme: [""], video:""}
 
 
 	function useToast(){
@@ -69,7 +69,7 @@
 
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
-			sign.theme =  []
+			sign.theme =  [""]
 		}
 
 		console.log("temos nome: " + sign.name)
