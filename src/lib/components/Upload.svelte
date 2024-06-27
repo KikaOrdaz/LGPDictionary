@@ -5,10 +5,7 @@
 	import { toast } from "svelte-sonner";
 	import { goto } from '$app/navigation';
 	import { supabase } from "$lib/supabaseClient";
-	import { Input } from "$lib/components/ui/input/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
-	import * as Tabs from "$lib/components/ui/tabs";
-	import { AuthInvalidCredentialsError } from '@supabase/supabase-js';
 	
 	export let database: any;
 	
@@ -16,7 +13,6 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme:[], video:""}
-	// let folder = {name :"", signs_id:[""]}
 
 
 	function useToast(){
@@ -145,47 +141,6 @@
 
 				</div>
 			</form>
-
-
-			<!-- <Tabs.Root value="sign" class="w-[400px]">
-				<Tabs.List >
-				  <Tabs.Trigger value="sign">Gesto</Tabs.Trigger>
-				  <Tabs.Trigger value="folder">Pasta</Tabs.Trigger>
-				</Tabs.List>
-				<Tabs.Content value="sign">
-					<form>
-						<div class="grid w-full items-center gap-4">
-							<div class="flex flex-col space-y-1.5">
-								<Label for="name">Nome</Label>
-								<Input id="name" placeholder="Nome do gesto" bind:value={sign.name}/>
-							</div>
-			
-							<div class="flex flex-col space-y-1.5">
-								<Label for="theme">Tema</Label>
-								<Input id="theme" placeholder="Tema do gesto" bind:value={sign.theme}/>
-							</div>
-				
-							<input type="file" bind:files/>
-
-						</div>
-					</form>
-				</Tabs.Content>
-				<Tabs.Content value="folder">
-					<form>
-						<div class="grid w-full items-center gap-4">
-							<div class="flex flex-col space-y-1.5">
-								<Label for="name">Nome</Label>
-								<Input id="name" placeholder="Nome da pasta" bind:value={folder.name}/>
-							</div>
-			
-							<input type="file" bind:files multiple/>
-
-						</div>
-					</form>
-				</Tabs.Content>
-			  </Tabs.Root> -->
-
-			
 		</div>
 		
 		

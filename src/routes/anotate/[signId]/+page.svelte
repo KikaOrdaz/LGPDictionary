@@ -35,7 +35,11 @@
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
     let database_ann_array : Array<number>
-     let themes : string[] = []
+    let themes : string[] = []
+
+    let new_name : string = ""
+
+    // let written_anotation = {configuration: "", movement: [], orientation: [], }
 
     export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
@@ -122,6 +126,19 @@
         console.log("data: ", data, " error: ", error);
     }
 
+    async function editNameAndTheme(name: string, theme: string[]) {
+     
+
+        const { data, error } = await supabase
+            .from('signs')
+            // .select()
+            .update({name: name, theme: theme }) 
+            .eq('id', sign.id);
+
+
+        console.log("data: ", data, " error: ", error);
+    }
+
     async function update_is_anotated(annotation : AnnotationArray, sign_id : number) {
         let is_anotated = 0;
 
@@ -202,10 +219,37 @@
     }
 
     function toggleEdit(){
+        let themes_to_update : string[] = []
+        if(edit_mode){
+            theme_edit_options.forEach((theme) => {
+                if(theme.show){
+                    themes_to_update.push(theme.name)
+                }
+            })
+
+            if(new_name == ""){
+                new_name = sign.name
+            }
+
+            editNameAndTheme(new_name, themes_to_update)
+
+        }
+
         edit_mode = !edit_mode
+
+        if (!edit_mode){
+            theme_edit_options = []
+            themes.forEach((theme: string) => {
+                let option = {name: theme, show: (sign.theme.includes(theme))}
+                theme_edit_options.push(option)
+	        })
+        }
+
+        console.log(themes_to_update)
     }
 
 </script>
+
 
 <div class="flex flex-row px-5 pt-5 sticky top-0">
     <div class="flex-none">
@@ -262,7 +306,7 @@
             </div>
             <div class="flex">
                 {#if edit_mode}
-                    <Input placeholder={sign.name} />
+                    <Input placeholder={sign.name} bind:value={new_name}/>
                 {:else}
                     {sign.name}
                 {/if}
@@ -277,8 +321,7 @@
         </div>
         <div class="flex flex-row text-sm">
             {#if edit_mode}
-             <DropdownButton label = {sign.theme} bind:options={theme_edit_options} edit_mode={edit_mode}/>
-
+                <DropdownButton label = {sign.theme} bind:options={theme_edit_options} edit_mode={edit_mode}/>
             {:else}
                 {sign.theme}
             {/if}
