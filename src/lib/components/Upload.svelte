@@ -13,17 +13,26 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme: [""], video:""}
+	let error_upload = true
 
 
 	function useToast(){
 
 		open = false;
-		toast('Upload bem-sucedido!', {
+		if(error_upload){
+			toast('Erro ao fazer upload', {
 			action: {
-				label: 'Anotar',
+				label: 'Ok',
 				onClick: () => /* goto("/anotate") */goto("/manage")
-			},
-			})
+			},})
+		} else {
+			toast('Upload bem-sucedido!', {
+			action: {
+				label: 'Ok',
+				onClick: () => /* goto("/anotate") */goto("/manage")
+			},})
+		}
+		
 			
 	}
 
@@ -51,29 +60,23 @@
 			.upload(file.name, file)
 
 		if(data) {
-			console.log("Dataa: " + data)
+			console.log("Data: " + data)
+			error_upload = false
 		} else {
 			console.log("Erro: " + error.message)
 		}
 	}
 
 	async function insertSign(index: number) {
-
-		console.log("Na função insertSign")
 		
 		let file = files[index]
 
 		sign.video = await getVideoURL();
 
-		console.log("temos link: " + sign.video)
-
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
 			sign.theme =  [""]
 		}
-
-		console.log("temos nome: " + sign.name)
-
 
 		
 		const { data, error } = await supabase
@@ -83,11 +86,10 @@
 		])
 		.select()
 
-		console.log("não deu o berro")
-
 		
 		
 		if(data) {
+			error_upload = false
 			console.log("insertSign - Dataa: " + data)		
 		} else {
 			console.log("insertSign - Erro: " + error.message)
@@ -102,12 +104,8 @@
 		
 		for (let i = 0; i < files.length; ++i){
 			console.log("index: " +  i)
-			
-			console.log("toca a uploadar")
 			uploadVideo(i)
-			console.log("deu o upload, vai a bd")
 			insertSign(i)
-			console.log("inseriu")
 		}
 
 	}
@@ -128,6 +126,7 @@
 		<Dialog.Header>
 			<Dialog.Title>Adicionar gesto(s)</Dialog.Title>
 			<Dialog.Description>Fazer upload de um só gesto ou de uma pasta.</Dialog.Description>
+			<Dialog.Description>Tamanho máximo de 50 MB.</Dialog.Description>
 		</Dialog.Header>
 		<div class="w-fit items-center">
 			<form>

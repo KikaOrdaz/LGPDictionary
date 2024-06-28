@@ -15,6 +15,8 @@
     import Pencil from '$lib/img/pencil.svelte';
     import Checkmark from '$lib/img/checkmark.svelte'
     import DropdownButton from '$lib/components/DropdownButton.svelte';
+    import Plus from '$lib/img/plus.svelte'
+    import Trash from '$lib/img/trash.svelte'
 
 
     type AnnotationArray = {
@@ -30,6 +32,7 @@
     export let sign = getSignById(+signId_params)
     export let signsAnotation = new Map<number, AnnotationArray>();
     let edit_mode = false
+    let add_theme = false
     
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
@@ -37,6 +40,7 @@
     let themes : string[] = []
 
     let new_name : string = ""
+    let new_theme : string = ""
 
     let written_anotation = {configuration: "", movement: ["","",""], orientation: ["",""]}
 
@@ -143,7 +147,7 @@
         const { data, error } = await supabase
             .from('signs')
             // .select()
-            .update({ anotation: annotation }) 
+            .update({ anotation: annotation , last_changed: ((new Date()).toISOString()).toLocaleString()}) 
             .eq('id', sign_id);
 
 
@@ -156,7 +160,7 @@
         const { data, error } = await supabase
             .from('signs')
             // .select()
-            .update({name: name, theme: theme }) 
+            .update({name: name, theme: theme , last_changed: ((new Date()).toISOString()).toLocaleString()}) 
             .eq('id', sign.id);
 
 
@@ -183,7 +187,7 @@
         const { data, error } = await supabase
             .from('signs')
             // .select()
-            .update({ is_anotated: is_anotated }) // Update with the annotation object
+            .update({ is_anotated: is_anotated , last_changed: ((new Date()).toISOString()).toLocaleString()}) // Update with the annotation object
             .eq('id', sign_id);
 
         console.log("data: ", data, " error: ", error);
@@ -195,7 +199,7 @@
     const { data, error } = await supabase
         .from('signs')
         // .select()
-        .update({ written_anotation: written_anotation }) 
+        .update({ written_anotation: written_anotation , last_changed: ((new Date()).toISOString()).toLocaleString()}) 
         .eq('id', sign_id);
 
 
@@ -222,8 +226,7 @@
                     movimento :"movimento:",
                     localizacao :"localizacao:",
                     orientacao :"orientacao:",
-                    expressoes :"expressoes:",
-                    tema :"tema:"}
+                    expressoes :"expressoes:"}
 
     if (anotationArray.configuration.length > 0){
         tab_colors.configuracao += "2"
@@ -269,6 +272,7 @@
         }
 
         edit_mode = !edit_mode
+        add_theme = false
 
         if (!edit_mode){
             theme_edit_options = []
@@ -281,7 +285,16 @@
         console.log(themes_to_update)
     }
 
+    function toggleAddTheme(){
+        if(add_theme && new_theme != ""){
+            themes.push(new_theme)
+            theme_edit_options.push({name: new_theme, show: true})
+        }
+        add_theme = ! add_theme
+    }
 </script>
+
+
 
 
 <div class="flex flex-row px-5 pt-5 sticky top-0">
@@ -294,20 +307,26 @@
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
-                <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>      
+                <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
             </Sheet.Content>
           </Sheet.Root>
     </div>
-    <div class="grow">
+    <div class="flex grow items-center">
+        {#if edit_mode}
+            Editar nome e tema
+        {/if}
     </div>
 
     <div class="flex-none">
+        <Button variant = "ghost" on:click>
+            <Trash />
+        </Button>
+
         <a data-sveltekit-reload href="../manage">
             <Button variant = "ghost">
                 <Xmark />
             </Button>
         </a>	
-
     </div>
 
 </div>
@@ -355,19 +374,30 @@
         <div class="flex flex-row text-sm">
             {#if edit_mode}
                 <DropdownButton label = {sign.theme} bind:options={theme_edit_options} edit_mode={edit_mode}/>
+                <Button variant="ghost" on:click={toggleAddTheme}> 
+                    <Plus/>
+                </Button>
             {:else}
                 {sign.theme}
             {/if}
         </div>
+
+        <div class="flex flex-row text-sm">
+            {#if edit_mode && add_theme}
+                <Input placeholder="Novo tema" bind:value={new_theme}/>
+
+            {/if}
+        </div>
+
     </div>
 
     <div class="flex placeitems-center">
         <Tabs.Root value="configuracao" class="">
             <Tabs.List class="">
                 <Tabs.Trigger value={tab_colors.configuracao}>Configuração</Tabs.Trigger>
-                <Tabs.Trigger value={tab_colors.movimento}>Movimento</Tabs.Trigger>
-                <Tabs.Trigger value={tab_colors.localizacao}>Localização</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.orientacao}>Orientação</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.localizacao}>Localização</Tabs.Trigger>
+                <Tabs.Trigger value={tab_colors.movimento}>Movimento</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.expressoes}>Expressões</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
@@ -385,6 +415,36 @@
                             </div>
                         </form>
                     </div>
+            </Tabs.Content>
+            <Tabs.Content value="orientacao">
+                <ParametersOptions data={data} 
+                                    currentTab={"orientacao"} 
+                                    bind:anotationArray={anotationArray} 
+                                    isParSelected={signStores.get(sign.id)} 
+                                    bind:signsAnotation={signsAnotation} 
+                                    bind:sign={sign}
+                                    />
+                <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
+                    <form>
+                        <div class="flex relative w-60">
+                            <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[0]}/>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="flex relative w-60">
+                            <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[1]}/>
+                        </div>
+                    </form>
+                </div>
+            </Tabs.Content>
+            <Tabs.Content value="localizacao">
+                <ParametersOptions data={data} 
+                                    currentTab={"localizacao"} 
+                                    bind:anotationArray={anotationArray} 
+                                    isParSelected={signStores.get(sign.id)} 
+                                    bind:signsAnotation={signsAnotation} 
+                                    bind:sign={sign}
+                                    />
             </Tabs.Content>
             <Tabs.Content value="movimento">
                     <ParametersOptions data={data} 
@@ -411,36 +471,6 @@
                                                 </div>
                                             </form>
                                         </div>
-            </Tabs.Content>
-            <Tabs.Content value="localizacao">
-                    <ParametersOptions data={data} 
-                                        currentTab={"localizacao"} 
-                                        bind:anotationArray={anotationArray} 
-                                        isParSelected={signStores.get(sign.id)} 
-                                        bind:signsAnotation={signsAnotation} 
-                                        bind:sign={sign}
-                                        />
-            </Tabs.Content>
-            <Tabs.Content value="orientacao">
-                    <ParametersOptions data={data} 
-                                        currentTab={"orientação"} 
-                                        bind:anotationArray={anotationArray} 
-                                        isParSelected={signStores.get(sign.id)} 
-                                        bind:signsAnotation={signsAnotation} 
-                                        bind:sign={sign}
-                                        />
-                    <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
-                        <form>
-                            <div class="flex relative w-60">
-                                <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[0]}/>
-                            </div>
-                        </form>
-                        <form>
-                            <div class="flex relative w-60">
-                                <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[1]}/>
-                            </div>
-                        </form>
-                    </div>
             </Tabs.Content>
             <Tabs.Content value="expressoes">
                     <ParametersOptions data={data} 
