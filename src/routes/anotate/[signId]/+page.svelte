@@ -16,8 +16,8 @@
     import Checkmark from '$lib/img/checkmark.svelte'
     import DropdownButton from '$lib/components/DropdownButton.svelte';
     import Plus from '$lib/img/plus.svelte'
+    import Minus from '$lib/img/minus.svelte'
     import Trash from '$lib/img/trash.svelte'
-
 
     type AnnotationArray = {
 		configuration: any[];
@@ -39,8 +39,9 @@
     let database_ann_array : Array<number>
     let themes : string[] = []
 
-    let new_name : string = ""
+    let new_name : string = sign.name
     let new_theme : string = ""
+    let themes_to_display = sign.theme
 
     let written_anotation = {configuration: "", movement: ["","",""], orientation: ["",""]}
 
@@ -292,6 +293,10 @@
         }
         add_theme = ! add_theme
     }
+
+    function addNewTheme(){
+        themes_to_display.push(new_theme)
+    }
 </script>
 
 
@@ -312,12 +317,20 @@
           </Sheet.Root>
     </div>
     <div class="flex grow items-center">
-        {#if edit_mode}
+        <!-- {#if edit_mode}
             Editar nome e tema
-        {/if}
+        {/if} -->
     </div>
 
-    <div class="flex-none">
+    <div class="flex flex-row">
+        <Button variant="ghost" class="flex flex-1" on:click={toggleEdit}>
+            {#if edit_mode}
+                <Checkmark />
+            {:else}
+                <Pencil />
+            {/if}
+        </Button>
+
         <Button variant = "ghost" on:click>
             <Trash />
         </Button>
@@ -326,7 +339,7 @@
             <Button variant = "ghost">
                 <Xmark />
             </Button>
-        </a>	
+        </a>
     </div>
 
 </div>
@@ -358,34 +371,49 @@
             </div>
             <div class="flex">
                 {#if edit_mode}
+                <div class="flex flex-row gap-3 items-center">
+                    <div class="font-bold">
+                        Nome:
+                    </div>
                     <Input placeholder={sign.name} bind:value={new_name}/>
+                </div>
                 {:else}
-                    {sign.name}
+                    {new_name}
                 {/if}
             </div>
-            <button class="flex flex-1" on:click={toggleEdit}>
-                {#if edit_mode}
-                    <Checkmark />
-                {:else}
-                    <Pencil />
-                {/if}
-            </button>
         </div>
-        <div class="flex flex-row text-sm">
+        <div class="flex flex-row text-sm gap-3 items-center">
             {#if edit_mode}
-                <DropdownButton label = {sign.theme} bind:options={theme_edit_options} edit_mode={edit_mode}/>
+                <div class="flex font-bold">
+                    Temas:
+                </div>
+                <DropdownButton label = {themes_to_display} bind:options={theme_edit_options} edit_mode={edit_mode}/>
                 <Button variant="ghost" on:click={toggleAddTheme}> 
-                    <Plus/>
+                    {#if add_theme}
+                        <Minus />
+                    {:else}
+                        <Plus/>
+                    {/if}
                 </Button>
             {:else}
-                {sign.theme}
+                {themes_to_display}
             {/if}
         </div>
 
-        <div class="flex flex-row text-sm">
+        <div class="flex flex-col gap-3">
             {#if edit_mode && add_theme}
-                <Input placeholder="Novo tema" bind:value={new_theme}/>
-
+               <div class="flex flex-row text-sm gap-2 items-center">
+                    <div class="font-bold">
+                        Novo tema:
+                    </div>
+                    <Input placeholder="" class="flex w-48" bind:value={new_theme}/>
+    
+                </div>
+                <div class="flex flex-row place-content-end">
+                    <Button variant="outline" on:click={addNewTheme}>
+                        Acrescentar tema
+                    </Button>
+                </div>
             {/if}
         </div>
 

@@ -20,9 +20,15 @@
 	export let isParSelected :  Writable<Map<any, boolean>>
 	export let signsAnotation = new Map<number, AnnotationArray>();
 	export let sign : any;
-	// let anotationWritten : string
+
+	let children_visible = new Map<string, boolean>();
 
 
+	data.parameters.forEach((parameter : any) => {
+		if(parameter.is_parent){
+
+		}
+	});
 
 	
 	export function updateSelectedState(id: any, isSelected: boolean) {
@@ -168,3 +174,50 @@
 		</div>
 
 </ScrollArea>
+
+
+<!--
+	{#each Array(5) as _, index (index)}
+	<div class="flex flex-row gap-3">
+		{#each Array(5) as _, index (index)}
+			<div class="flex flex-col p-3">
+				<Card.Root class="flex items-center justify-center aspect-square">
+					<Card.Content>
+						<Collapsible.Root>
+							<Collapsible.Trigger>
+								<img class="" src="$lib/img/signs/0..svg" alt="Thumb"/>
+								Abrir
+							</Collapsible.Trigger>
+							<Collapsible.Content>
+								Gestos
+								Gestos
+								Gestos
+								Gestos
+								Gestos
+								Gestos
+								
+							</Collapsible.Content>
+						</Collapsible.Root>
+					</Card.Content>
+				</Card.Root>
+			</div>
+		{/each}
+	</div>
+{/each}
+-->
+
+
+<!--
+<div class="grid grid-cols-5 gap-4">
+    {#each squares as square}
+        <button
+            class="aspect-square border"
+            class:col-span-2={square === expandedSquare}
+            class:row-span-2={square === expandedSquare}
+            on:click={() => (expandedSquare = square)}
+        >
+            {square}
+		</button>
+    {/each}
+</div>
+-->
