@@ -130,9 +130,6 @@
 			{#each $ordered_data as sign}
 				{#if themeShown(sign.theme, theme_options) && anotationShown(sign.is_anotated, anotation_options)}
 					<Table.Row class="cursor-pointer content-center" on:click={() => goto('./anotate/'+sign.id)}>
-						<!-- <Table.Cell>
-							<PlayRectangle/>
-						</Table.Cell> -->
 						<Table.Cell class="font-medium"> {sign.name} </Table.Cell>
 						<Table.Cell> {sign.theme} </Table.Cell>
 						<Table.Cell>{new Date(sign.created_at).toLocaleDateString()}</Table.Cell>
