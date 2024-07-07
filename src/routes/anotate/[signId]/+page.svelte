@@ -305,7 +305,31 @@
         themes_to_display.push(new_theme)
     }
 
+
+    function extractPath(url: string): string {
+        const regex = /storage\/v1\/object\/public\/Signs\/([^?]*)/;
+        const match = url.match(regex);
+        if (match && match[1]) {
+            return match[1];
+        }
+        throw new Error("Could not extract path from the given URL");
+    }
+
     async function deleteSign() {
+        let video_link = sign.video
+
+        if(video_link){
+            let file_path = extractPath(video_link)
+
+            const { data, error } = await supabase
+            .storage
+            .from('Signs')
+            .remove([file_path])
+
+            console.log(data)
+            console.log(error);
+        }
+
 		const response = await supabase
 			.from('signs')
 			.delete()

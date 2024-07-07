@@ -26,16 +26,47 @@
 		selection = !selection;
 	}
 	
+	function getSignById(id : any) {
+        return data.signs.find((item: { id: any; }) => item.id === id);
+    }
+
 	async function deleteSign(sign_id: number) {
-   		console.log("a apagar " + sign_id);
+
+		let video_link = getSignById(sign_id).video
+
+		if(video_link){
+			let file_path = extractPath(video_link)
+
+			const { data, error } = await supabase
+			.storage
+			.from('Signs')
+			.remove([file_path])
+
+			console.log(data)
+			console.log(error);
+		}
+
 		const response = await supabase
 			.from('signs')
 			.delete()
 			.eq('id', sign_id);
 
 		console.log(response);
+
+
 		return response;
 	}
+
+	function extractPath(url: string): string {
+		const regex = /storage\/v1\/object\/public\/Signs\/([^?]*)/;
+		const match = url.match(regex);
+		if (match && match[1]) {
+			return match[1];
+		}
+		throw new Error("Could not extract path from the given URL");
+	}
+
+
 
 	function deleteSelectedSigns() {
 		console.log("A apagar");
