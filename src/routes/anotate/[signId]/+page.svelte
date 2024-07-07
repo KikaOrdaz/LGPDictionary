@@ -1,23 +1,27 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-	import * as Card from '$lib/components/ui/card';
 	import PlayFill from '$lib/img/play_fill.svelte';
 	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Tabs from '$lib/components/ui/tabs';
 	import ParametersOptions from '$lib/components/ParametersOptions.svelte';
-    import * as Sheet from "$lib/components/ui/sheet";
     import Line_3Horizontal from '$lib/img/line_3_horizontal.svelte';
     import Sidebar from "$lib/components/Sidebar.svelte"
     import Xmark from '$lib/img/xmark.svelte';
     import Input from '$lib/components/ui/input/input.svelte';
-	import { writable, type Writable } from 'svelte/store';
-	import { supabase } from "$lib/supabaseClient";
     import Pencil from '$lib/img/pencil.svelte';
     import Checkmark from '$lib/img/checkmark.svelte'
     import DropdownButton from '$lib/components/DropdownButton.svelte';
     import Plus from '$lib/img/plus.svelte'
     import Minus from '$lib/img/minus.svelte'
     import Trash from '$lib/img/trash.svelte'
+	import { writable, type Writable } from 'svelte/store';
+	import { supabase } from "$lib/supabaseClient";
+	import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
+	import * as Card from '$lib/components/ui/card';
+	import * as Tabs from '$lib/components/ui/tabs';
+    import * as Sheet from "$lib/components/ui/sheet";
+    import * as AlertDialog from "$lib/components/ui/alert-dialog";
+    import SDCard from '$lib/img/sdcard.svelte';
+    import SDCardFill from '$lib/img/sdcard_fill.svelte';
 
     type AnnotationArray = {
 		configuration: any[];
@@ -31,6 +35,7 @@
     let signId_params = JSON.parse(JSON.stringify($page.params)).signId
     export let sign = getSignById(+signId_params)
     export let signsAnotation = new Map<number, AnnotationArray>();
+    export let exist_changes = false
     let edit_mode = false
     let add_theme = false
     
@@ -221,6 +226,8 @@
         });
 
         insertWrittenAnotation(written_anotation, sign.id)
+
+        exist_changes = false
     } 
 
     let tab_colors = {configuracao :"configuracao:",
@@ -297,6 +304,30 @@
     function addNewTheme(){
         themes_to_display.push(new_theme)
     }
+
+    async function deleteSign() {
+		const response = await supabase
+			.from('signs')
+			.delete()
+			.eq('id', sign.id);
+
+		console.log(response);
+        
+        goToManage()
+
+
+		return response;
+	}
+
+    function goToManage(){
+        goto('../manage')
+    }
+
+    function leaveAndSave(){
+        endAnotation()
+        goToManage()
+    }
+
 </script>
 
 
@@ -308,7 +339,6 @@
             <Sheet.Trigger>
                 <div class="flex flex-col gap-1 items-center">
                     <Line_3Horizontal />
-                    <!-- {anotatedCount}/{folder.signs_id.length} -->
                 </div>
             </Sheet.Trigger>
             <Sheet.Content side=left class="flex flex-grow justify-center">
@@ -316,13 +346,17 @@
             </Sheet.Content>
           </Sheet.Root>
     </div>
-    <div class="flex grow items-center">
-        <!-- {#if edit_mode}
-            Editar nome e tema
-        {/if} -->
-    </div>
+    <div class="flex grow items-center"></div>
 
     <div class="flex flex-row">
+        <Button variant="ghost" on:click={endAnotation}>
+            {#if exist_changes}
+                <SDCard />
+            {:else}
+                <SDCardFill/>
+            {/if}
+        </Button>
+    
         <Button variant="ghost" class="flex flex-1" on:click={toggleEdit}>
             {#if edit_mode}
                 <Checkmark />
@@ -331,15 +365,49 @@
             {/if}
         </Button>
 
-        <Button variant = "ghost" on:click>
-            <Trash />
-        </Button>
-
-        <a data-sveltekit-reload href="../manage">
-            <Button variant = "ghost">
+        <AlertDialog.Root>
+            <AlertDialog.Trigger>
+              <Button variant = "ghost">
+                <Trash />
+            </Button>
+            </AlertDialog.Trigger>
+            <AlertDialog.Content>
+              <AlertDialog.Header>
+                <AlertDialog.Title>Tem a certeza que quer apagar este gesto?</AlertDialog.Title>
+              </AlertDialog.Header>
+              <AlertDialog.Footer>
+                <AlertDialog.Cancel> Cancelar </AlertDialog.Cancel>
+                <AlertDialog.Action on:click={deleteSign}> Continuar </AlertDialog.Action>
+              </AlertDialog.Footer>
+            </AlertDialog.Content>
+          </AlertDialog.Root>
+        
+        {#if exist_changes}
+            <AlertDialog.Root>
+                <AlertDialog.Trigger>
+                    <Button variant = "ghost">
+                        <Xmark />
+                    </Button>
+                </AlertDialog.Trigger>
+                <AlertDialog.Content>
+                <AlertDialog.Header>
+                    <AlertDialog.Title>Deseja guardar as alterações?</AlertDialog.Title>
+                </AlertDialog.Header>
+                <AlertDialog.Footer>
+                    <AlertDialog.Cancel on:click={goToManage}> Sair sem Guardar </AlertDialog.Cancel>
+                    <AlertDialog.Action on:click={leaveAndSave}> Sair e Guardar </AlertDialog.Action>
+                </AlertDialog.Footer>
+                </AlertDialog.Content>
+            </AlertDialog.Root>
+        {:else}
+            <Button variant = "ghost" on:click={goToManage}>
                 <Xmark />
             </Button>
-        </a>
+        {/if}
+
+          
+
+        
     </div>
 
 </div>
@@ -363,9 +431,6 @@
     </div>
 
     <div class="flex flex-col items-center">
-
-        
-        
         <div class="flex flex-row gap-2 items-center">
             <div class="flex flex-1">
             </div>
@@ -382,6 +447,7 @@
                 {/if}
             </div>
         </div>
+
         <div class="flex flex-row text-sm gap-3 items-center">
             {#if edit_mode}
                 <div class="flex font-bold">
@@ -435,6 +501,7 @@
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 
                                         bind:sign={sign}
+                                        bind:exist_changes={exist_changes}
                                         />
                     <div class="flex flex-row sticky justify-center pt-8 bottom-4">
                         <form>
@@ -451,6 +518,7 @@
                                     isParSelected={signStores.get(sign.id)} 
                                     bind:signsAnotation={signsAnotation} 
                                     bind:sign={sign}
+                                    bind:exist_changes={exist_changes}
                                     />
                 <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                     <form>
@@ -472,6 +540,7 @@
                                     isParSelected={signStores.get(sign.id)} 
                                     bind:signsAnotation={signsAnotation} 
                                     bind:sign={sign}
+                                    bind:exist_changes={exist_changes}
                                     />
             </Tabs.Content>
             <Tabs.Content value="movimento">
@@ -481,6 +550,7 @@
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 
                                         bind:sign={sign}
+                                        bind:exist_changes={exist_changes}
                                         />
                                         <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
                                             <form>
@@ -507,6 +577,7 @@
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 
                                         bind:sign={sign}
+                                        bind:exist_changes={exist_changes}
                                         />
             </Tabs.Content>
         </Tabs.Root>
@@ -515,9 +586,5 @@
 
 
 <div class="fixed bottom-0 right-0 p-3">
-    <!-- <a data-sveltekit-reload href="../manage">  -->
-        <Button variant="outline" on:click={() => endAnotation()}>
-            Guardar
-        </Button>
-    <!-- </a> -->
+    
 </div>

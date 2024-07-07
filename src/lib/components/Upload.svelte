@@ -13,28 +13,7 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme: [""], video:""}
-	let error_upload = true
-
-
-	function useToast(){
-
-		open = false;
-		if(error_upload){
-			toast('Erro ao fazer upload', {
-			action: {
-				label: 'Ok',
-				onClick: () => /* goto("/anotate") */goto("/manage")
-			},})
-		} else {
-			toast('Upload bem-sucedido!', {
-			action: {
-				label: 'Ok',
-				onClick: () => /* goto("/anotate") */goto("/manage")
-			},})
-		}
-		
-			
-	}
+	let error_upload = false
 
 	function getSignByName(name : any) {
     	return database.signs.find((item: { name: any; }) => item.name === name);
@@ -61,10 +40,12 @@
 
 		if(data) {
 			console.log("Data: " + data)
-			error_upload = false
 		} else {
+			error_upload = true
 			console.log("Erro: " + error.message)
 		}
+
+		console.log("Upload Video" + error_upload)
 	}
 
 	async function insertSign(index: number) {
@@ -75,7 +56,7 @@
 
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
-			sign.theme =  [""]
+			sign.theme =  ["tema por definir"]
 		}
 
 		
@@ -87,11 +68,10 @@
 		.select()
 
 		
-		
 		if(data) {
-			error_upload = false
 			console.log("insertSign - Dataa: " + data)		
 		} else {
+			error_upload = true
 			console.log("insertSign - Erro: " + error.message)
 		}
 
@@ -107,7 +87,30 @@
 			uploadVideo(i)
 			insertSign(i)
 		}
+		console.log("addVideos " + error_upload)
 
+		useToast()
+	}
+
+
+	function useToast(){
+
+		open = false;
+
+		console.log("Use toast:" + error_upload)
+		if(error_upload){
+			toast('Erro ao fazer upload', {
+			action: {
+				label: 'Ok',
+				onClick: () => /* goto("/anotate") */goto("/manage")
+			},})
+		} else {
+			toast('Upload bem-sucedido!', {
+			action: {
+				label: 'Ok',
+				onClick: () => /* goto("/anotate") */goto("/manage")
+			},})
+		}
 	}
 
 	// $: multiple = files.length > 1
@@ -145,7 +148,7 @@
 		
 		<Dialog.Footer class="flex justify-between">
 			<Button variant="outline">Cancel</Button>
-			<Button variant="outline" type="submit" on:click={addVideos} on:click={useToast} >
+			<Button variant="outline" type="submit" on:click={addVideos} >
 				Upload
 			</Button>
 		</Dialog.Footer>

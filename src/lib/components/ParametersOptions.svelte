@@ -21,8 +21,7 @@
 	export let isParSelected :  Writable<Map<any, boolean>>
 	export let signsAnotation = new Map<number, AnnotationArray>();
 	export let sign : any;
-
-	let children_visible = new Map<string, boolean>();
+	export let exist_changes : boolean
 
 
 	data.parameters.forEach((parameter : any) => {
@@ -59,8 +58,10 @@
 					console.log(anotationArray)
 					anotationArray.configuration.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					exist_changes = true
 				} else {
 					anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
+				exist_changes = true
 				}
 				
 				break;
@@ -70,8 +71,10 @@
 				if(!isSelected){
 					anotationArray.movement.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					exist_changes = true
 				} else {
 					anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
+				exist_changes = true
 				}
 				break;
 			}
@@ -80,8 +83,10 @@
 				if(!isSelected){
 					anotationArray.location.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					exist_changes = true
 				} else {
 					anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
+				exist_changes = true
 				}
 				break;
 			}
@@ -90,8 +95,10 @@
 				if(!isSelected){
 					anotationArray.orientation.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					exist_changes = true
 				} else {
 					anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
+				exist_changes = true
 				}
 				break;
 			}
@@ -100,8 +107,10 @@
 				if(!isSelected){
 					anotationArray.expression.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					exist_changes = true
 				} else {
 					anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
+				exist_changes = true
 				}
 				break;
 			}
@@ -164,9 +173,11 @@
 											<Card.Content>
 												{#if getElementByCode(child).tipo == "configuracao"}
 													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
-												{:else if getElementByCode(child).image == null}
+												{:else}
 													{#if getElementByCode(child).nome !=null}
-														{getElementByCode(child).nome}
+														<div class="flex text-xs">
+															{getElementByCode(child).nome}
+														</div>
 													{:else}
 														{getElementByCode(child).código}
 													{/if}
@@ -178,9 +189,11 @@
 											<Card.Content>
 												{#if getElementByCode(child).tipo == "configuracao"}
 													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
-												{:else if getElementByCode(child).image == null}
+												{:else}
 													{#if getElementByCode(child).nome !=null}
-														{getElementByCode(child).nome}
+														<div class="flex text-xs">
+															{getElementByCode(child).nome}
+														</div>
 													{:else}
 														{getElementByCode(child).código}
 													{/if}

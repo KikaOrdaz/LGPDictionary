@@ -6,11 +6,46 @@
 	import { writable } from 'svelte/store';	
 	export let data;
 	import DropdownRadioButton from '$lib/components/DropdownRadioButton.svelte'
+	import { supabase } from "$lib/supabaseClient";
+	import Button from '$lib/components/ui/button/button.svelte';
+	import CheckmarkCircle from '$lib/img/checkmark_circle.svelte';
+	import CheckmarkCircleFill from '$lib/img/checkmark_circle_fill.svelte'
+	import Trash from '$lib/img/trash.svelte'
+	import * as AlertDialog from "$lib/components/ui/alert-dialog";
+
 
 	let themes : string[] = []
 	export let anotation_options =  [{name:"Anotados", show: true}, {name: "Anotação não terminada", show: true}, {name: "Por anotar", show: true}]
 	export let theme_options : {name: string, show: boolean}[] = []
 	export let order : string;
+	export let signs_to_delete : number[] = [];
+
+	let selection = false;
+	
+	function toggleSelection(){
+		selection = !selection;
+	}
+	
+	async function deleteSign(sign_id: number) {
+   		console.log("a apagar " + sign_id);
+		const response = await supabase
+			.from('signs')
+			.delete()
+			.eq('id', sign_id);
+
+		console.log(response);
+		return response;
+	}
+
+	function deleteSelectedSigns() {
+		console.log("A apagar");
+		console.log(signs_to_delete);
+		const promises = signs_to_delete.map((id: number) => deleteSign(id));
+
+		Promise.all(promises).then(() => {
+			window.location.reload();
+		});
+	}
 
 
 	data.signs.forEach((sign: any) => {
@@ -42,6 +77,34 @@
 			</form>
 		</div>
 		<div class = "flex flex-1 justify-end gap-5">
+			{#if selection}
+				<AlertDialog.Root>
+				  <AlertDialog.Trigger>
+					<Button variant="outline"> 
+						<Trash/>
+					</Button>
+				  </AlertDialog.Trigger>
+				  <AlertDialog.Content>
+					<AlertDialog.Header>
+					  <AlertDialog.Title>Tem a certeza que quer apagar estes gestos?</AlertDialog.Title>
+					</AlertDialog.Header>
+					<AlertDialog.Footer>
+					  <AlertDialog.Cancel> Cancelar </AlertDialog.Cancel>
+					  <AlertDialog.Action on:click={deleteSelectedSigns}> Continuar </AlertDialog.Action>
+					</AlertDialog.Footer>
+				  </AlertDialog.Content>
+				</AlertDialog.Root>
+			{/if}
+			   
+
+			<Button variant="outline" on:click={toggleSelection}>
+				{#if !selection}
+					<CheckmarkCircle />
+				{:else}
+					<CheckmarkCircleFill/>
+				{/if}
+			</Button>
+
 			<Upload database={data}/>
 		</div>
 	</div>
@@ -60,7 +123,7 @@
 
 	</div>
 
-	<FileTable data={data} bind:theme_options={theme_options} bind:anotation_options={anotation_options}/>
+	<FileTable data={data} bind:theme_options={theme_options} bind:anotation_options={anotation_options} selection={selection} bind:signs_to_delete={signs_to_delete}/>
 
 </div>
 
