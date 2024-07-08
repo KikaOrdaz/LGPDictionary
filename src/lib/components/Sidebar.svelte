@@ -22,20 +22,6 @@
     export let anotation_options : {name: string, show: boolean}[]
 	export let theme_options : {name: string, show: boolean}[]
 
-	/* data.signs.forEach((sign: any) => {
-		sign.theme.forEach((theme: string) => {
-			if(!(themes.indexOf(theme) > -1)){
-				themes.push(theme)
-			}
-		})
-	})
-
-
-    themes.forEach((theme: string) => {
-		let option = {name: theme, show: true}
-		theme_options.push(option)
-	}) */
-    
     function themeShown(themeName : string[], options : any) : boolean{
 
         let themeValue = false

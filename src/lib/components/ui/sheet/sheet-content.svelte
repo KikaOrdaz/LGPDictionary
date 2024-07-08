@@ -35,6 +35,7 @@
 		{outTransitionConfig}
 		class={cn(sheetVariants({ side }), className)}
 		{...$$restProps}
+		
 	>
 		<slot />
 		<SheetPrimitive.Close

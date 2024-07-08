@@ -6,6 +6,8 @@
 	import { type Writable } from 'svelte/store';
 	import * as HoverCard from "$lib/components/ui/hover-card";
 	import { ChevronUp } from 'svelte-radix';
+	import { toast } from "svelte-sonner";
+
 
 	type AnnotationArray = {
 		configuration: any[];
@@ -23,6 +25,8 @@
 	export let sign : any;
 	export let exist_changes : boolean
 
+	let open = false
+
 
 	data.parameters.forEach((parameter : any) => {
 		if(parameter.is_parent){
@@ -37,6 +41,37 @@
         newMap.set(id, isSelected);
         return newMap;
     });
+	}
+
+	function useToast(message: number){
+
+		open = false;
+
+		if(message == 0){
+			toast('A editar nome e temas', {
+			action: {
+				label: 'Ok',
+				onClick: () => {}
+			},})
+		} else if (message == 1) {
+			toast('Alterações guardadas!', {
+			action: {
+				label: 'Ok',
+				onClick: () => reloadPage()
+			},})
+		} else if (message == 2){
+			toast('Tem anotações por guardar!', {
+			action: {
+				label: 'Ok',
+				onClick: () => {}
+			},})
+		} else if (message == 3){
+			toast('Anotação guardada!', {
+			action: {
+				label: 'Ok',
+				onClick: () => reloadPage()
+			},})
+		}
 	}
 
 	function getElementByCode(código : any) {
@@ -58,9 +93,15 @@
 					console.log(anotationArray)
 					anotationArray.configuration.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					if(!exist_changes){
+						useToast(2)
+					}
 					exist_changes = true
 				} else {
 					anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
+					if(!exist_changes){
+						useToast(2)
+					}
 				exist_changes = true
 				}
 				
@@ -71,9 +112,15 @@
 				if(!isSelected){
 					anotationArray.movement.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					if(!exist_changes){
+						useToast(2)
+					}
 					exist_changes = true
 				} else {
 					anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
+					if(!exist_changes){
+						useToast(2)
+					}
 				exist_changes = true
 				}
 				break;
@@ -83,9 +130,15 @@
 				if(!isSelected){
 					anotationArray.location.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					if(!exist_changes){
+						useToast(2)
+					}
 					exist_changes = true
 				} else {
 					anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
+					if(!exist_changes){
+						useToast(2)
+					}
 				exist_changes = true
 				}
 				break;
@@ -95,10 +148,16 @@
 				if(!isSelected){
 					anotationArray.orientation.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					if(!exist_changes){
+						useToast(2)
+					}
 					exist_changes = true
 				} else {
 					anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
-				exist_changes = true
+					if(!exist_changes){
+						useToast(2)
+					}
+					exist_changes = true
 				}
 				break;
 			}
@@ -107,9 +166,15 @@
 				if(!isSelected){
 					anotationArray.expression.push(id)
 					signsAnotation.set(sign.id, anotationArray)
+					if(!exist_changes){
+						useToast(2)
+					}
 					exist_changes = true
 				} else {
 					anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
+					if(!exist_changes){
+						useToast(2)
+					}
 				exist_changes = true
 				}
 				break;
@@ -117,6 +182,10 @@
 			
 		}
 	}
+
+	function reloadPage() {
+    	window.location.reload();
+    }
 
 	
 </script>

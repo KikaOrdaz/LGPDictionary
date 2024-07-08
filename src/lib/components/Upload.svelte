@@ -13,11 +13,14 @@
 	let open = false;
 	let files: FileList
 	let sign = {name :"", theme: [""], video:""}
-	let error_upload = false
 
 	function getSignByName(name : any) {
     	return database.signs.find((item: { name: any; }) => item.name === name);
   	}
+
+	function reloadPage() {
+    	window.location.reload();
+    }
 
 	async function getVideoURL() {
 		let file = files[0]
@@ -30,7 +33,7 @@
 		return data.publicUrl
 	}
 
-	async function uploadVideo(index: number) {
+	async function uploadVideo(index: number, error_upload: boolean) {
 		let file = files[index]
 
 		const {data, error} = await supabase
@@ -46,9 +49,11 @@
 		}
 
 		console.log("Upload Video" + error_upload)
+
+		return error_upload
 	}
 
-	async function insertSign(index: number) {
+	async function insertSign(index: number, error_upload: boolean) {
 		
 		let file = files[index]
 
@@ -75,25 +80,27 @@
 			console.log("insertSign - Erro: " + error.message)
 		}
 
+		return error_upload
+
 	}
 
 
 	async function  addVideos() {
 		console.log("Na função addVideos")
-
+		let error_upload = false
 		
 		for (let i = 0; i < files.length; ++i){
 			console.log("index: " +  i)
-			uploadVideo(i)
-			insertSign(i)
+			error_upload = await uploadVideo(i, error_upload)
+			error_upload = await insertSign(i, error_upload)
 		}
 		console.log("addVideos " + error_upload)
 
-		useToast()
+		useToast(error_upload)
 	}
 
-
-	function useToast(){
+	
+	function useToast(error_upload: boolean){
 
 		open = false;
 
@@ -102,13 +109,13 @@
 			toast('Erro ao fazer upload', {
 			action: {
 				label: 'Ok',
-				onClick: () => /* goto("/anotate") */goto("/manage")
+				onClick: () => reloadPage()
 			},})
 		} else {
 			toast('Upload bem-sucedido!', {
 			action: {
 				label: 'Ok',
-				onClick: () => /* goto("/anotate") */goto("/manage")
+				onClick: () => reloadPage()
 			},})
 		}
 	}

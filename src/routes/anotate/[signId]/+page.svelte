@@ -22,6 +22,7 @@
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
     import SDCard from '$lib/img/sdcard.svelte';
     import SDCardFill from '$lib/img/sdcard_fill.svelte';
+    import { toast } from "svelte-sonner";
 
     type AnnotationArray = {
 		configuration: any[];
@@ -38,6 +39,9 @@
     export let exist_changes = false
     let edit_mode = false
     let add_theme = false
+	let open = false;
+    let sheet_open = true
+
     
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
@@ -140,7 +144,6 @@
         });
         signStores.set(sign.id, store)
     });
-
     
     function getSignById(id : any) {
         return data.signs.find((item: { id: any; }) => item.id === id);
@@ -209,10 +212,40 @@
         .eq('id', sign_id);
 
 
-    console.log("data: ", data, " error: ", error);
+        console.log("data: ", data, " error: ", error);
+    }
+
+
+    function useToast(message: number){
+
+        open = false;
+
+        if(message == 0){
+            toast('A editar nome e temas', {
+            action: {
+                label: 'Ok',
+                onClick: () => {}
+            },})
+        } else if (message == 1) {
+            toast('Alterações guardadas!', {
+            action: {
+                label: 'Ok',
+                onClick: () => reloadPage()
+            },})
+        } else if (message == 2){
+            toast('Tem anotações por guardar!', {
+            action: {
+                label: 'Ok',
+                onClick: () => {}
+            },})
+        } else if (message == 3){
+            toast('Anotação guardada!', {
+            action: {
+                label: 'Ok',
+                onClick: () => reloadPage()
+            },})
+        }
 }
-
-
     function endAnotation() {
         console.log("End annotation");
 
@@ -228,6 +261,7 @@
         insertWrittenAnotation(written_anotation, sign.id)
 
         exist_changes = false
+        useToast(3)
     } 
 
     let tab_colors = {configuracao :"configuracao:",
@@ -264,6 +298,7 @@
 
     function toggleEdit(){
         let themes_to_update : string[] = []
+        let initial_edit_mode = edit_mode
         if(edit_mode){
             theme_edit_options.forEach((theme) => {
                 if(theme.show){
@@ -276,7 +311,7 @@
             }
 
             editNameAndTheme(new_name, themes_to_update)
-
+            useToast(1)
         }
 
         edit_mode = !edit_mode
@@ -288,6 +323,10 @@
                 let option = {name: theme, show: (sign.theme.includes(theme))}
                 theme_edit_options.push(option)
 	        })
+        }
+
+        if(!initial_edit_mode && edit_mode){
+            useToast(0)
         }
 
         console.log(themes_to_update)
@@ -351,6 +390,10 @@
         endAnotation()
         goToManage()
     }
+    
+	function reloadPage() {
+    	window.location.reload();
+    }
 
 </script>
 
@@ -359,13 +402,13 @@
 
 <div class="flex flex-row px-5 pt-5 sticky top-0">
     <div class="flex-none">
-        <Sheet.Root>
+        <Sheet.Root bind:open={sheet_open}>
             <Sheet.Trigger>
                 <div class="flex flex-col gap-1 items-center">
                     <Line_3Horizontal />
                 </div>
             </Sheet.Trigger>
-            <Sheet.Content side=left class="flex flex-grow justify-center">
+            <Sheet.Content side=left class="flex flex-grow justify-center" >
                 <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
             </Sheet.Content>
           </Sheet.Root>
