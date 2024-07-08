@@ -485,7 +485,7 @@
         
             {#if current_video}
                     <!-- svelte-ignore a11y-media-has-caption -->
-                    <video width="320" height="240" controls>
+                    <video class="flex aspect-video w-72" controls>
                         <source src={current_video} type="video/mp4">
                     </video>
             {:else}
@@ -552,9 +552,9 @@
 
     </div>
 
-    <div class="flex placeitems-center">
-        <Tabs.Root value="configuracao" class="">
-            <Tabs.List class="">
+    <div>
+        <Tabs.Root value="configuracao" class="flex flex-col items-center gap-y-2">
+            <Tabs.List class="flex items-center w-fit">
                 <Tabs.Trigger value={tab_colors.configuracao}>Configuração</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.orientacao}>Orientação</Tabs.Trigger>
                 <Tabs.Trigger value={tab_colors.localizacao}>Localização</Tabs.Trigger>
@@ -562,16 +562,18 @@
                 <Tabs.Trigger value={tab_colors.expressoes}>Expressões</Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content value="configuracao">
+                <div class="flex items-center">
                     <ParametersOptions data={data} 
-                                        currentTab={"configuracao"} 
-                                        bind:anotationArray={anotationArray} 
-                                        isParSelected={signStores.get(sign.id)} 
-                                        bind:signsAnotation={signsAnotation} 
-                                        bind:sign={sign}
-                                        bind:exist_changes={exist_changes}
-                                        />
-                    <div class="flex flex-row sticky justify-center pt-8 bottom-4">
-                        <form>
+                                            currentTab={"configuracao"} 
+                                            bind:anotationArray={anotationArray} 
+                                            isParSelected={signStores.get(sign.id)} 
+                                            bind:signsAnotation={signsAnotation} 
+                                            bind:sign={sign}
+                                            bind:exist_changes={exist_changes}
+                                            />
+                </div>    
+                    <div class="flex flex-row sticky justify-center pt-8 bottom-4 bg-white bg-blend-overlay">
+                        <form class="flex bg-white">
                             <div class="flex relative w-60">
                                 <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.configuration}/>
                             </div>
@@ -579,21 +581,23 @@
                     </div>
             </Tabs.Content>
             <Tabs.Content value="orientacao">
-                <ParametersOptions data={data} 
-                                    currentTab={"orientacao"} 
-                                    bind:anotationArray={anotationArray} 
-                                    isParSelected={signStores.get(sign.id)} 
-                                    bind:signsAnotation={signsAnotation} 
-                                    bind:sign={sign}
-                                    bind:exist_changes={exist_changes}
-                                    />
-                <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
-                    <form>
+                <div class="flex items-center">
+                    <ParametersOptions data={data} 
+                                        currentTab={"orientacao"} 
+                                        bind:anotationArray={anotationArray} 
+                                        isParSelected={signStores.get(sign.id)} 
+                                        bind:signsAnotation={signsAnotation} 
+                                        bind:sign={sign}
+                                        bind:exist_changes={exist_changes}
+                                        />
+                </div>
+                <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4 w-full bg-white bg-blend-overlay">
+                    <form class="flex bg-white">
                         <div class="flex relative w-60">
                             <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[0]}/>
                         </div>
                     </form>
-                    <form>
+                    <form class="flex bg-white">
                         <div class="flex relative w-60">
                             <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.orientation[1]}/>
                         </div>
@@ -601,36 +605,40 @@
                 </div>
             </Tabs.Content>
             <Tabs.Content value="localizacao">
-                <ParametersOptions data={data} 
-                                    currentTab={"localizacao"} 
-                                    bind:anotationArray={anotationArray} 
-                                    isParSelected={signStores.get(sign.id)} 
-                                    bind:signsAnotation={signsAnotation} 
-                                    bind:sign={sign}
-                                    bind:exist_changes={exist_changes}
-                                    />
-            </Tabs.Content>
-            <Tabs.Content value="movimento">
+                <div class="flex items-center">
                     <ParametersOptions data={data} 
-                                        currentTab={"movimento"} 
+                                        currentTab={"localizacao"} 
                                         bind:anotationArray={anotationArray} 
                                         isParSelected={signStores.get(sign.id)} 
                                         bind:signsAnotation={signsAnotation} 
                                         bind:sign={sign}
                                         bind:exist_changes={exist_changes}
                                         />
-                                        <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4">
-                                            <form>
+                </div>
+            </Tabs.Content>
+            <Tabs.Content value="movimento">
+                <div class="flex items-center">
+                    <ParametersOptions data={data} 
+                                            currentTab={"movimento"} 
+                                            bind:anotationArray={anotationArray} 
+                                            isParSelected={signStores.get(sign.id)} 
+                                            bind:signsAnotation={signsAnotation} 
+                                            bind:sign={sign}
+                                            bind:exist_changes={exist_changes}
+                                            />
+                </div>    
+                                        <div class="flex flex-row sticky justify-center pt-8 gap-4 bottom-4  bg-white bg-blend-overlay">
+                                            <form class="flex bg-white">
                                                 <div class="flex relative w-40">
                                                     <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[0]}/>
                                                 </div>
                                             </form>
-                                            <form>
+                                            <form class="flex bg-white">
                                                 <div class="flex relative w-40">
                                                     <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[1]}/>
                                                 </div>
                                             </form>
-                                            <form>
+                                            <form class="flex bg-white">
                                                 <div class="flex relative w-40">
                                                     <Input placeholder="Anotação" class="pl-8" bind:value={written_anotation.movement[2]}/>
                                                 </div>
@@ -638,14 +646,16 @@
                                         </div>
             </Tabs.Content>
             <Tabs.Content value="expressoes">
+                <div class="flex items-center">
                     <ParametersOptions data={data} 
-                                        currentTab={"expressao facial"} 
-                                        bind:anotationArray={anotationArray} 
-                                        isParSelected={signStores.get(sign.id)} 
-                                        bind:signsAnotation={signsAnotation} 
-                                        bind:sign={sign}
-                                        bind:exist_changes={exist_changes}
-                                        />
+                                            currentTab={"expressao facial"} 
+                                            bind:anotationArray={anotationArray} 
+                                            isParSelected={signStores.get(sign.id)} 
+                                            bind:signsAnotation={signsAnotation} 
+                                            bind:sign={sign}
+                                            bind:exist_changes={exist_changes}
+                                            />
+                </div>    
             </Tabs.Content>
         </Tabs.Root>
     </div>

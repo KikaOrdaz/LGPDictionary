@@ -191,7 +191,7 @@
 </script>
 
 <ScrollArea class="flex h-[22rem] pt-4">
-	<div class="grid grid-cols-4 gap-4">
+	<div class="grid grid-cols-6 gap-4">
 		{#each data.parameters as par}
 			{#if par.is_parent && par.tipo == currentTab}  
 				<HoverCard.Root>
