@@ -152,11 +152,36 @@
   
     async function insertAnotation(annotation: AnnotationArray, sign_id: number) {
     
+        let db_annotation_array = getSignById(sign_id).annotation_array
+
+        if(annotation.configuration){
+            annotation.configuration.forEach((parameter) => {
+                db_annotation_array[parameter] = 1
+            })
+        } else if(annotation.movement){
+            annotation.movement.forEach((parameter) => {
+                db_annotation_array[parameter] = 1
+            })
+        } else if(annotation.location){
+            annotation.location.forEach((parameter) => {
+                db_annotation_array[parameter] = 1
+            })
+        } else if(annotation.orientation){
+            annotation.orientation.forEach((parameter) => {
+                db_annotation_array[parameter] = 1
+            })
+        } else if(annotation.expression){
+            annotation.expression.forEach((parameter) => {
+                db_annotation_array[parameter] = 1
+            })
+        }
 
         const { data, error } = await supabase
             .from('signs')
             // .select()
-            .update({ anotation: annotation , last_changed: ((new Date()).toISOString()).toLocaleString()}) 
+            .update({ anotation: annotation , 
+                last_changed: ((new Date()).toISOString()).toLocaleString(), 
+                annotation_array: db_annotation_array}) 
             .eq('id', sign_id);
 
 
