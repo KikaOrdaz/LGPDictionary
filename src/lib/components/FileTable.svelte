@@ -17,6 +17,7 @@
 	export let signs_to_delete : number[];
 
 	let ordered_data = writable(data.signs);
+	$: ordered_data.set(data.signs);
 
 	function getSignById(id : any) {
         return data.signs.find((item: { id: any; }) => item.id === id);
@@ -202,5 +203,6 @@
 			
 		</Table.Body>
 	</Table.Root>
+	
 </div>
 
