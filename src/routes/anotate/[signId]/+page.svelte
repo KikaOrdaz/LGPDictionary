@@ -23,6 +23,7 @@
     import SDCard from '$lib/img/sdcard.svelte';
     import SDCardFill from '$lib/img/sdcard_fill.svelte';
     import { toast } from "svelte-sonner";
+    
 
     type AnnotationArray = {
 		configuration: any[];
