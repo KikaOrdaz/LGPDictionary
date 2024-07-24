@@ -17,7 +17,7 @@
     let themes: string[] = [];
     export let anotation_options = [{ name: "Anotados", show: true }, { name: "Anotação não terminada", show: true }, { name: "Por anotar", show: true }];
     export let theme_options: { name: string, show: boolean }[] = [];
-    export let order: string;
+    export let order: string = "last_changed";
     export let signs_to_delete: number[] = [];
 
     let selection = false;
@@ -102,11 +102,23 @@
 
     const fetchSignsDebounced = debounce(fetchSigns, 350);
 
-    $: $searchQuery, fetchSignsDebounced();
+    $: [$searchQuery, order], fetchSignsDebounced();
 
     async function fetchSigns() {
         const searchQueryValue = $searchQuery.trim();
-        let query = supabase.from("signs").select().order('theme', { ascending: true }).order('name', { ascending: true });
+        let query = supabase.from("signs").select();
+
+         // Apply ordering
+         if (order === 'last_altered') {
+            query = query.order('last_changed', { ascending: false });
+        } else if (order === 'upload_date') {
+            query = query.order('created_at', { ascending: false });
+        } else if (order === 'state') {
+            query = query.order('is_anotated', { ascending: false });
+        } else if (order === 'alphabetical') {
+            query = query.order('name', { ascending: true });
+        }
+
 
         if (searchQueryValue.startsWith("Tags:")) {
             const tagName = searchQueryValue.replace("Tags:", "").trim();
@@ -114,6 +126,8 @@
         } else {
             query = query.ilike('name', `%${searchQueryValue}%`);
         }
+        
+       
 
         const { data: signsData, error } = await query;
 
