@@ -24,6 +24,7 @@
 	export let signsAnotation = new Map<number, AnnotationArray>();
 	export let sign : any;
 	export let exist_changes : boolean
+	
 
 	let open = false
 
@@ -85,103 +86,45 @@
 		
 		updateSelectedState(id, !isSelected)	
 
+
+		const updateAnnotationArray = (type: keyof AnnotationArray, id: any) => {
+			if (!isSelected) {
+				console.log(id); //keep them for debugging if need be
+				console.log(anotationArray);
+				anotationArray[type].push(id);
+				signsAnotation.set(sign.id, anotationArray);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			} else {
+				anotationArray[type] = anotationArray[type].filter(e => e !== id);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			}
+		};
 		
-		switch(tipo){
-			case "configuracao":{
-				if(!isSelected){
-					console.log(id)
-					console.log(anotationArray)
-					anotationArray.configuration.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
-				
+		switch (tipo) {
+			case "configuracao":
+				updateAnnotationArray('configuration', id);
 				break;
-			}
-			
-			case "movimento":{
-				if(!isSelected){
-					anotationArray.movement.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "movimento":
+				updateAnnotationArray('movement', id);
 				break;
-			}
-			
-			case "localizacao":{
-				if(!isSelected){
-					anotationArray.location.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "localizacao":
+				updateAnnotationArray('location', id);
 				break;
-			}
-			
-			case "orientacao":{
-				if(!isSelected){
-					anotationArray.orientation.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				}
+			case "orientacao":
+				updateAnnotationArray('orientation', id);
 				break;
-			}
-			
-			case "expressao facial":{
-				if(!isSelected){
-					anotationArray.expression.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "expressao facial":
+				updateAnnotationArray('expression', id);
 				break;
-			}
-			
 		}
 	}
+	
 
 	function reloadPage() {
     	window.location.reload();
@@ -189,11 +132,11 @@
 
 	
 </script>
-
 <ScrollArea class="flex h-[22rem] pt-4">
 	<div class="grid grid-cols-6 gap-4">
-		{#each data.parameters as par}
-			{#if par.is_parent && par.tipo == currentTab}  
+		{#if data.parameters}
+		{#each data.parameters as par (par.id)}
+			{#if par.is_parent && par.tipo == currentTab}
 				<HoverCard.Root>
 					<HoverCard.Trigger>
 						<button on:click={() => selectParameter(par.id, par.tipo)}>
@@ -203,7 +146,7 @@
 										{#if par.tipo == "configuracao"}
 											<img class="flex w-20" src={par.image} alt=""/>
 										{:else if par.image == null}
-											{#if par.nome !=null}
+											{#if par.nome != null}
 												{par.nome}
 											{:else}
 												{par.código}
@@ -217,7 +160,7 @@
 										{#if par.tipo == "configuracao"}
 											<img class="flex w-20" src={par.image} alt=""/>
 										{:else if par.image == null}
-											{#if par.nome !=null}
+											{#if par.nome != null}
 												{par.nome}
 											{:else}
 												{par.código}
@@ -227,55 +170,56 @@
 								</Card.Root>
 							{/if}
 						</button>
-
 					</HoverCard.Trigger>
-						<HoverCard.Content class="grid grid-cols-3 items-center gap-3">
-							{#if par.children.length == 0}
-								<div class="flex flex-row text-xs">
-									Sem sub-parâmetros	
-								</div>
-							{/if}
-							{#each par.children as child}
-								<button on:click={() => selectParameter(getElementByCode(child).id, getElementByCode(child).tipo)}>
+					<HoverCard.Content class="grid grid-cols-3 items-center gap-3">
+						{#if par.children.length == 0}
+							<div class="flex flex-row text-xs">
+								Sem sub-parâmetros
+							</div>
+						{/if}
+						{#if par.children}
+						{#each par.children as child (child)}
+							<button on:click={() => selectParameter(getElementByCode(child).id, getElementByCode(child).tipo)}>
 								{#if $isParSelected.get(getElementByCode(child).id)}
-										<Card.Root class="flex items-center justify-center aspect-square w-16" style="border: 2px solid #0096FF;">
-											<Card.Content>
-												{#if getElementByCode(child).tipo == "configuracao"}
-													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
+									<Card.Root class="flex items-center justify-center aspect-square w-16" style="border: 2px solid #0096FF;">
+										<Card.Content>
+											{#if getElementByCode(child).tipo == "configuracao"}
+												<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
+											{:else}
+												{#if getElementByCode(child).nome != null}
+													<div class="flex text-xs">
+														{getElementByCode(child).nome}
+													</div>
 												{:else}
-													{#if getElementByCode(child).nome !=null}
-														<div class="flex text-xs">
-															{getElementByCode(child).nome}
-														</div>
-													{:else}
-														{getElementByCode(child).código}
-													{/if}
+													{getElementByCode(child).código}
 												{/if}
-											</Card.Content>
-										</Card.Root>
-									{:else}
-										<Card.Root class="flex items-center justify-center aspect-square w-16">
-											<Card.Content>
-												{#if getElementByCode(child).tipo == "configuracao"}
-													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
+											{/if}
+										</Card.Content>
+									</Card.Root>
+								{:else}
+									<Card.Root class="flex items-center justify-center aspect-square w-16">
+										<Card.Content>
+											{#if getElementByCode(child).tipo == "configuracao"}
+												<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
+											{:else}
+												{#if getElementByCode(child).nome != null}
+													<div class="flex text-xs">
+														{getElementByCode(child).nome}
+													</div>
 												{:else}
-													{#if getElementByCode(child).nome !=null}
-														<div class="flex text-xs">
-															{getElementByCode(child).nome}
-														</div>
-													{:else}
-														{getElementByCode(child).código}
-													{/if}
+													{getElementByCode(child).código}
 												{/if}
-											</Card.Content>
-										</Card.Root>
-									{/if}
-								</button>
-							{/each}
-						</HoverCard.Content>
-		  		</HoverCard.Root>
+											{/if}
+										</Card.Content>
+									</Card.Root>
+								{/if}
+							</button>
+						{/each}
+						{/if}
+					</HoverCard.Content>
+				</HoverCard.Root>
 			{/if}
 		{/each}
-		</div>
-
+		{/if}
+	</div>
 </ScrollArea>
