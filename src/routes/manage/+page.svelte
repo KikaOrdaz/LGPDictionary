@@ -17,7 +17,7 @@
     let themes: string[] = [];
     export let anotation_options = [{ name: "Anotados", show: true }, { name: "Anotação não terminada", show: true }, { name: "Por anotar", show: true }];
     export let theme_options: { name: string, show: boolean }[] = [];
-    export let order: string = "last_changed";
+    export let order: string = "";
     export let signs_to_delete: number[] = [];
 
     let selection = false;
@@ -120,24 +120,28 @@
         }
 
 
-        if (searchQueryValue.startsWith("Tags:")) {
-            const tagName = searchQueryValue.replace("Tags:", "").trim();
-            query = query.contains('theme', [tagName]);
-        } else {
-            query = query.ilike('name', `%${searchQueryValue}%`);
-        }
-        
-       
+        const { data: tagsData } = await supabase
+        .from("signs")
+        .select("theme")
+        .contains('theme', [searchQueryValue]);
 
-        const { data: signsData, error } = await query;
-
-        if (error) {
-            console.error('Error fetching signs:', error);
-        } else {
-            console.log('Fetched signs data:', signsData);
-            data.signs = signsData ?? [];
-        }
+    if (tagsData && tagsData.length > 0) {
+        // If there are matching tags, filter by them
+        query = query.contains('theme', [searchQueryValue]);
+    } else {
+        // If no tags are found, search by name
+        query = query.ilike('name', `%${searchQueryValue}%`);
     }
+
+    const { data: signsData, error } = await query;
+
+    if (error) {
+        console.error('Error fetching signs:', error);
+    } else {
+        console.log('Fetched signs data:', signsData);
+        data.signs = signsData ?? [];
+    }
+}
 </script>
 
 <div class="flex flex-col pt-10">

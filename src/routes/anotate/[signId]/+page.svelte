@@ -437,25 +437,32 @@
     $: $searchQuery, fetchSignsDebounced();
 
     async function fetchSigns() {
-        const searchQueryValue = $searchQuery.trim();
-        let query = supabase.from("signs").select().order('theme', { ascending: true }).order('name', { ascending: true });
+    const searchQueryValue = $searchQuery.trim();
+    let query = supabase.from("signs").select().order('theme', { ascending: true }).order('name', { ascending: true });
 
-        if (searchQueryValue.startsWith("Tags:")) {
-            const tagName = searchQueryValue.replace("Tags:", "").trim();
-            query = query.contains('theme', [tagName]);
-        } else {
-            query = query.ilike('name', `%${searchQueryValue}%`);
-        }
+    // Query for tags first to see if the search term matches any tags
+    const { data: tagsData } = await supabase
+        .from("signs")
+        .select("theme")
+        .contains('theme', [searchQueryValue]);
 
-        const { data: signsData, error } = await query;
-
-        if (error) {
-            console.error('Error fetching signs:', error);
-        } else {
-            console.log('Fetched signs data:', signsData);
-            data.signs = signsData ?? [];
-        }
+    if (tagsData && tagsData.length > 0) {
+        // If there are matching tags, filter by them
+        query = query.contains('theme', [searchQueryValue]);
+    } else {
+        // If no tags are found, search by name
+        query = query.ilike('name', `%${searchQueryValue}%`);
     }
+
+    const { data: signsData, error } = await query;
+
+    if (error) {
+        console.error('Error fetching signs:', error);
+    } else {
+        console.log('Fetched signs data:', signsData);
+        data.signs = signsData ?? [];
+    }
+}
 
 </script>
 
