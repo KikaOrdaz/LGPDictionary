@@ -24,6 +24,7 @@
 	export let signsAnotation = new Map<number, AnnotationArray>();
 	export let sign : any;
 	export let exist_changes : boolean
+	
 
 	let open = false
 
@@ -88,103 +89,45 @@
 		
 		updateSelectedState(id, !isSelected)	
 
+
+		const updateAnnotationArray = (type: keyof AnnotationArray, id: any) => {
+			if (!isSelected) {
+				console.log(id); //keep them for debugging if need be
+				console.log(anotationArray);
+				anotationArray[type].push(id);
+				signsAnotation.set(sign.id, anotationArray);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			} else {
+				anotationArray[type] = anotationArray[type].filter(e => e !== id);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			}
+		};
 		
-		switch(tipo){
-			case "configuracao":{
-				if(!isSelected){
-					console.log(id)
-					console.log(anotationArray)
-					anotationArray.configuration.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
-				
+		switch (tipo) {
+			case "configuracao":
+				updateAnnotationArray('configuration', id);
 				break;
-			}
-			
-			case "movimento":{
-				if(!isSelected){
-					anotationArray.movement.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "movimento":
+				updateAnnotationArray('movement', id);
 				break;
-			}
-			
-			case "localizacao":{
-				if(!isSelected){
-					anotationArray.location.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "localizacao":
+				updateAnnotationArray('location', id);
 				break;
-			}
-			
-			case "orientacao":{
-				if(!isSelected){
-					anotationArray.orientation.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				}
+			case "orientacao":
+				updateAnnotationArray('orientation', id);
 				break;
-			}
-			
-			case "expressao facial":{
-				if(!isSelected){
-					anotationArray.expression.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "expressao facial":
+				updateAnnotationArray('expression', id);
 				break;
-			}
-			
 		}
 	}
+	
 
 	function reloadPage() {
     	window.location.reload();
@@ -192,7 +135,6 @@
 
 	
 </script>
-
 <ScrollArea class="flex h-[22rem] pt-4">
 	<div class="grid grid-cols-3 gap-4">
 		{#each data.parameters as par}
@@ -225,7 +167,7 @@
 											<img class="flex w-14" src={par.image} alt=""/>
 											{par.código}
 										{:else if par.image == null}
-											{#if par.nome !=null}
+											{#if par.nome != null}
 												{par.nome}
 												{par.código}
 											{:else}
