@@ -43,7 +43,7 @@
     let add_theme = false
 	let open = false;
     let sheet_open = true
-
+    const searchQuery = writable('');
     
     export let anotationArray: AnnotationArray = sign.anotation
     let database_annotation
@@ -422,6 +422,50 @@
     	window.location.reload();
     }
 
+    function debounce(func: Function, wait: number) {
+    let timeout: ReturnType<typeof setTimeout>;
+    return function(...args: any[]) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+    const fetchSignsDebounced = debounce(fetchSigns, 350);
+
+    $: $searchQuery, fetchSignsDebounced();
+
+    async function fetchSigns() {
+    const searchQueryValue = $searchQuery.trim();
+    let query = supabase.from("signs").select().order('theme', { ascending: true }).order('name', { ascending: true });
+
+    // Query for tags first to see if the search term matches any tags
+    const { data: tagsData } = await supabase
+        .from("signs")
+        .select("theme")
+        .contains('theme', [searchQueryValue]);
+
+    if (tagsData && tagsData.length > 0) {
+        // If there are matching tags, filter by them
+        query = query.contains('theme', [searchQueryValue]);
+    } else {
+        // If no tags are found, search by name
+        query = query.ilike('name', `%${searchQueryValue}%`);
+    }
+
+    const { data: signsData, error } = await query;
+
+    if (error) {
+        console.error('Error fetching signs:', error);
+    } else {
+        console.log('Fetched signs data:', signsData);
+        data.signs = signsData ?? [];
+    }
+}
+
 </script>
 
 
@@ -435,11 +479,25 @@
                     <Line_3Horizontal />
                 </div>
             </Sheet.Trigger>
-            <Sheet.Content side=left class="flex flex-grow justify-center" >
-                <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
+            <Sheet.Content side=left class="flex flex-grow justify-center">
+                
+                <div class="flex flex-col items-center w-full mt-5">
+                    <Input
+                        type="text"
+                        placeholder="Pesquisa"
+                        class="w-3/4 max-w-xs mb-1"
+                        bind:value={$searchQuery}
+                        on:input={() => fetchSignsDebounced()} />
+                    
+                    <!-- Place your buttons here -->
+                    <div class="flex flex-col items-center">
+                        <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
+                    </div>
+                </div>
             </Sheet.Content>
-          </Sheet.Root>
+        </Sheet.Root>
     </div>
+
     <div class="flex grow items-center"></div>
 
     <div class="flex flex-row gap-2">
