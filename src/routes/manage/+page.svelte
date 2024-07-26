@@ -13,6 +13,7 @@
     import Trash from '$lib/img/trash.svelte';
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
     import type { EventHandler } from 'svelte/elements';
+    import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 
     let themes: string[] = [];
     export let anotation_options = [{ name: "Anotados", show: true }, { name: "Anotação não terminada", show: true }, { name: "Por anotar", show: true }];

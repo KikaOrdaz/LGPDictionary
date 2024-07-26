@@ -24,6 +24,8 @@
     import SDCardFill from '$lib/img/sdcard_fill.svelte';
     import { toast } from "svelte-sonner";
 
+
+
     type AnnotationArray = {
 		configuration: any[];
 		movement: any[];
@@ -498,20 +500,20 @@
 
     <div class="flex grow items-center"></div>
 
-    <div class="flex flex-row">
-        <Button variant="ghost" on:click={endAnotation}>
+    <div class="flex flex-row gap-2">
+        <Button variant="outline" on:click={endAnotation}>
             {#if exist_changes}
-                <SDCard />
+                Guardar
             {:else}
-                <SDCardFill/>
+                Guardado
             {/if}
         </Button>
     
-        <Button variant="ghost" class="flex flex-1" on:click={toggleEdit}>
+        <Button variant="outline" class="flex flex-1" on:click={toggleEdit}>
             {#if edit_mode}
-                <Checkmark />
+                A Editar
             {:else}
-                <Pencil />
+                Editar
             {/if}
         </Button>
 
