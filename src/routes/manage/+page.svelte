@@ -13,11 +13,12 @@
     import Trash from '$lib/img/trash.svelte';
     import * as AlertDialog from "$lib/components/ui/alert-dialog";
     import type { EventHandler } from 'svelte/elements';
+    import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 
     let themes: string[] = [];
     export let anotation_options = [{ name: "Anotados", show: true }, { name: "Anotação não terminada", show: true }, { name: "Por anotar", show: true }];
     export let theme_options: { name: string, show: boolean }[] = [];
-    export let order: string;
+    export let order: string = "";
     export let signs_to_delete: number[] = [];
 
     let selection = false;
@@ -102,28 +103,46 @@
 
     const fetchSignsDebounced = debounce(fetchSigns, 350);
 
-    $: $searchQuery, fetchSignsDebounced();
+    $: [$searchQuery, order], fetchSignsDebounced();
 
     async function fetchSigns() {
         const searchQueryValue = $searchQuery.trim();
-        let query = supabase.from("signs").select().order('theme', { ascending: true }).order('name', { ascending: true });
+        let query = supabase.from("signs").select();
 
-        if (searchQueryValue.startsWith("Tags:")) {
-            const tagName = searchQueryValue.replace("Tags:", "").trim();
-            query = query.contains('theme', [tagName]);
-        } else {
-            query = query.ilike('name', `%${searchQueryValue}%`);
+         // Apply ordering
+         if (order === 'last_altered') {
+            query = query.order('last_changed', { ascending: false });
+        } else if (order === 'upload_date') {
+            query = query.order('created_at', { ascending: false });
+        } else if (order === 'state') {
+            query = query.order('is_anotated', { ascending: false });
+        } else if (order === 'alphabetical') {
+            query = query.order('name', { ascending: true });
         }
 
-        const { data: signsData, error } = await query;
 
-        if (error) {
-            console.error('Error fetching signs:', error);
-        } else {
-            console.log('Fetched signs data:', signsData);
-            data.signs = signsData ?? [];
-        }
+        const { data: tagsData } = await supabase
+        .from("signs")
+        .select("theme")
+        .contains('theme', [searchQueryValue]);
+
+    if (tagsData && tagsData.length > 0) {
+        // If there are matching tags, filter by them
+        query = query.contains('theme', [searchQueryValue]);
+    } else {
+        // If no tags are found, search by name
+        query = query.ilike('name', `%${searchQueryValue}%`);
     }
+
+    const { data: signsData, error } = await query;
+
+    if (error) {
+        console.error('Error fetching signs:', error);
+    } else {
+        console.log('Fetched signs data:', signsData);
+        data.signs = signsData ?? [];
+    }
+}
 </script>
 
 <div class="flex flex-col pt-10">

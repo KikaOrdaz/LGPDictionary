@@ -24,6 +24,7 @@
 	export let signsAnotation = new Map<number, AnnotationArray>();
 	export let sign : any;
 	export let exist_changes : boolean
+	
 
 	let open = false
 
@@ -78,6 +79,9 @@
     	return data.parameters.find((item: { código: any; }) => item.código === código);
 	}
 
+	function getParameterById(id : any) {
+        return data.parameters.find((item: { id: any; }) => item.id === id);
+    }
 
 	function selectParameter(id: any, tipo: any){
 
@@ -85,103 +89,45 @@
 		
 		updateSelectedState(id, !isSelected)	
 
+
+		const updateAnnotationArray = (type: keyof AnnotationArray, id: any) => {
+			if (!isSelected) {
+				console.log(id); //keep them for debugging if need be
+				console.log(anotationArray);
+				anotationArray[type].push(id);
+				signsAnotation.set(sign.id, anotationArray);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			} else {
+				anotationArray[type] = anotationArray[type].filter(e => e !== id);
+				if (!exist_changes) {
+					useToast(2);
+				}
+				exist_changes = true;
+			}
+		};
 		
-		switch(tipo){
-			case "configuracao":{
-				if(!isSelected){
-					console.log(id)
-					console.log(anotationArray)
-					anotationArray.configuration.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.configuration = anotationArray.configuration.filter((e, i) => i !== anotationArray.configuration.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
-				
+		switch (tipo) {
+			case "configuracao":
+				updateAnnotationArray('configuration', id);
 				break;
-			}
-			
-			case "movimento":{
-				if(!isSelected){
-					anotationArray.movement.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.movement = anotationArray.movement.filter((e, i) => i !== anotationArray.movement.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "movimento":
+				updateAnnotationArray('movement', id);
 				break;
-			}
-			
-			case "localizacao":{
-				if(!isSelected){
-					anotationArray.location.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.location = anotationArray.location.filter((e, i) => i !== anotationArray.location.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "localizacao":
+				updateAnnotationArray('location', id);
 				break;
-			}
-			
-			case "orientacao":{
-				if(!isSelected){
-					anotationArray.orientation.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.orientation = anotationArray.orientation.filter((e, i) => i !== anotationArray.orientation.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				}
+			case "orientacao":
+				updateAnnotationArray('orientation', id);
 				break;
-			}
-			
-			case "expressao facial":{
-				if(!isSelected){
-					anotationArray.expression.push(id)
-					signsAnotation.set(sign.id, anotationArray)
-					if(!exist_changes){
-						useToast(2)
-					}
-					exist_changes = true
-				} else {
-					anotationArray.expression = anotationArray.expression.filter((e, i) => i !== anotationArray.expression.indexOf(id)); 
-					if(!exist_changes){
-						useToast(2)
-					}
-				exist_changes = true
-				}
+			case "expressao facial":
+				updateAnnotationArray('expression', id);
 				break;
-			}
-			
 		}
 	}
+	
 
 	function reloadPage() {
     	window.location.reload();
@@ -189,93 +135,127 @@
 
 	
 </script>
-
 <ScrollArea class="flex h-[22rem] pt-4">
-	<div class="grid grid-cols-6 gap-4">
+	<div class="grid grid-cols-3 gap-4">
 		{#each data.parameters as par}
 			{#if par.is_parent && par.tipo == currentTab}  
-				<HoverCard.Root>
-					<HoverCard.Trigger>
-						<button on:click={() => selectParameter(par.id, par.tipo)}>
-							{#if $isParSelected.get(par.id)}
-								<Card.Root class="flex items-center justify-center aspect-square w-32" style="border: 2px solid #0096FF;">
-									<Card.Content>
+				{#if par.children.length == 0}
+					<button on:click={() => selectParameter(par.id, par.tipo)}>
+						{#if $isParSelected.get(par.id)}
+							<Card.Root class="flex flex-col items-center justify-center w-96 h-max gap-3 pt-2" style="border: 2px solid #0096FF;">
+									<Card.Content class="flex flex-col gap-2">
+										<div class="flex flex-col items-center justify-center">
+											{#if par.tipo == "configuracao"}
+												<img class="flex w-14" src={par.image} alt=""/>
+												{par.código}
+											{:else if par.image == null}
+												{#if par.nome !=null}
+													{par.nome}
+													{par.código}
+												{:else}
+													{par.código}
+												{/if}
+											{/if}
+										</div>
+									</Card.Content>
+								</Card.Root>
+						{:else}
+							<Card.Root class="flex flex-col items-center justify-center w-96 h-auto gap-3 pt-2">
+								<Card.Content class="flex flex-col gap-2">
+									<div class="flex flex-col items-center justify-center">
 										{#if par.tipo == "configuracao"}
-											<img class="flex w-20" src={par.image} alt=""/>
+											<img class="flex w-14" src={par.image} alt=""/>
+											{par.código}
 										{:else if par.image == null}
-											{#if par.nome !=null}
+											{#if par.nome != null}
 												{par.nome}
+												{par.código}
 											{:else}
 												{par.código}
 											{/if}
 										{/if}
-									</Card.Content>
-								</Card.Root>
-							{:else}
-								<Card.Root class="flex items-center justify-center aspect-square w-32">
-									<Card.Content>
-										{#if par.tipo == "configuracao"}
-											<img class="flex w-20" src={par.image} alt=""/>
-										{:else if par.image == null}
-											{#if par.nome !=null}
-												{par.nome}
-											{:else}
-												{par.código}
-											{/if}
-										{/if}
-									</Card.Content>
-								</Card.Root>
-							{/if}
-						</button>
+									</div>
+								</Card.Content>
+							</Card.Root>
+						{/if}
+					</button>
+				{:else}
+					<Card.Root>
+						<Card.Content class="flex flex-col items-center justify-center w-96 h-fit gap-3 pt-2">
+							<button on:click={() => selectParameter(par.id, par.tipo)}>
+								{#if $isParSelected.get(par.id)}
+									<Card.Root class="flex items-center justify-center aspect-square w-32" style="border: 2px solid #0096FF;">
+											<Card.Content class="flex flex-col gap-2">
+												<div class="flex flex-col items-center justify-center">
+													{#if par.tipo == "configuracao"}
+														<img class="flex w-14" src={par.image} alt=""/>
+														{par.código}
+													{:else if par.image == null}
+														{#if par.nome !=null}
+															{par.nome}
+															{par.código}
+														{:else}
+															{par.código}
+														{/if}
+													{/if}
+												</div>
+											</Card.Content>
+										</Card.Root>
+								{:else}
+									<Card.Root class="flex items-center justify-center aspect-square w-32">
+										<Card.Content class="flex flex-col gap-2">
+											<div class="flex flex-col items-center justify-center">
+												{#if par.tipo == "configuracao"}
+													<img class="flex w-14" src={par.image} alt=""/>
+													{par.código}
+												{:else if par.image == null}
+													{#if par.nome !=null}
+														{par.nome}
+														{par.código}
+													{:else}
+														{par.código}
+													{/if}
+												{/if}
+											</div>
+										</Card.Content>
+									</Card.Root>
+								{/if}
+							</button>
 
-					</HoverCard.Trigger>
-						<HoverCard.Content class="grid grid-cols-3 items-center gap-3">
-							{#if par.children.length == 0}
-								<div class="flex flex-row text-xs">
-									Sem sub-parâmetros	
+							{#if par.children.length > 0}
+								<div class="grid grid-cols-3 gap-4">
+									{#each par.children as child}
+										{#if child != null}
+											<button on:click={() => selectParameter(getElementByCode(child).id, getElementByCode(child).tipo)}>
+												{#if $isParSelected.get(getElementByCode(child).id)}
+													<Card.Root class="flex flex-col items-center justify-center aspect-square w-28"  style="border: 2px solid #0096FF;">
+														<Card.Content>
+															<img class="flex w-14" src={getElementByCode(child).image} alt=""/>
+															<div class="flex text-xs">
+																{child}
+															</div>
+														</Card.Content>
+													</Card.Root>
+												{:else}
+													<Card.Root class="flex flex-col items-center justify-center aspect-square w-28">
+														<Card.Content>
+															<img class="flex w-14" src={getElementByCode(child).image} alt=""/>
+															<div class="flex text-xs">
+																{child}
+															</div>
+														</Card.Content>
+													</Card.Root>
+												{/if}
+											</button>
+										{/if}
+									{/each}
 								</div>
 							{/if}
-							{#each par.children as child}
-								<button on:click={() => selectParameter(getElementByCode(child).id, getElementByCode(child).tipo)}>
-								{#if $isParSelected.get(getElementByCode(child).id)}
-										<Card.Root class="flex items-center justify-center aspect-square w-16" style="border: 2px solid #0096FF;">
-											<Card.Content>
-												{#if getElementByCode(child).tipo == "configuracao"}
-													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
-												{:else}
-													{#if getElementByCode(child).nome !=null}
-														<div class="flex text-xs">
-															{getElementByCode(child).nome}
-														</div>
-													{:else}
-														{getElementByCode(child).código}
-													{/if}
-												{/if}
-											</Card.Content>
-										</Card.Root>
-									{:else}
-										<Card.Root class="flex items-center justify-center aspect-square w-16">
-											<Card.Content>
-												{#if getElementByCode(child).tipo == "configuracao"}
-													<img class="flex w-full" src={getElementByCode(child).image} alt=""/>
-												{:else}
-													{#if getElementByCode(child).nome !=null}
-														<div class="flex text-xs">
-															{getElementByCode(child).nome}
-														</div>
-													{:else}
-														{getElementByCode(child).código}
-													{/if}
-												{/if}
-											</Card.Content>
-										</Card.Root>
-									{/if}
-								</button>
-							{/each}
-						</HoverCard.Content>
-		  		</HoverCard.Root>
+						</Card.Content>
+					</Card.Root>
+				{/if}
 			{/if}
 		{/each}
-		</div>
+	</div>
 
 </ScrollArea>
