@@ -490,7 +490,7 @@
                         on:input={() => fetchSignsDebounced()} />
                     
                     <!-- Place your buttons here -->
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center overflow-y-auto">
                         <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
                     </div>
                 </div>
