@@ -491,7 +491,7 @@
                         on:input={() => fetchSignsDebounced()} />
                     
                     <!-- Place your buttons here -->
-                    <div class="flex flex-col items-center">
+                    <div class="flex flex-col items-center overflow-y-auto">
                         <Sidebar data={data} bind:current_sign={sign} bind:anotation_options={anotation_options} bind:theme_options={theme_options}/>
                     </div>
                 </div>
@@ -509,14 +509,7 @@
                 Guardado
             {/if}
         </Button>
-    
-        <Button variant="outline" class="flex flex-1" on:click={toggleEdit}>
-            {#if edit_mode}
-                A Editar
-            {:else}
-                Editar
-            {/if}
-        </Button>
+
 
         <AlertDialog.Root>
             <AlertDialog.Trigger>
@@ -535,7 +528,7 @@
             </AlertDialog.Content>
           </AlertDialog.Root>
         
-        {#if exist_changes}
+        {#if exist_changes || edit_mode}
             <AlertDialog.Root>
                 <AlertDialog.Trigger>
                     <Button variant = "ghost">
@@ -583,60 +576,78 @@
 
     </div>
 
-    <div class="flex flex-col items-center">
-        <div class="flex flex-row gap-2 items-center">
-            <div class="flex flex-1">
-            </div>
-            <div class="flex">
-                {#if edit_mode}
-                <div class="flex flex-row gap-3 items-center">
-                    <div class="font-bold">
-                        Nome:
-                    </div>
-                    <Input placeholder={sign.name} bind:value={new_name}/>
+    <div class="flex flex-row  w-72 gap-3">
+        <div class="flex flex-1"></div>
+
+
+        <div class="flex flex-col items-center">
+        
+            <div class="flex flex-row gap-2 items-center">
+                <div class="flex flex-1">
                 </div>
+                <div class="flex">
+                    {#if edit_mode}
+                    <div class="flex flex-row gap-3 items-center">
+                        <div class="font-bold">
+                            Nome:
+                        </div>
+                        <Input placeholder={sign.name} bind:value={new_name}/>
+                    </div>
+                    {:else}
+                        {new_name}
+                    {/if}
+                </div>
+            </div>
+
+            <div class="flex flex-row text-sm gap-3 items-center">
+                {#if edit_mode}
+                    <div class="flex font-bold">
+                        Temas:
+                    </div>
+                    <DropdownButton label = {themes_to_display} bind:options={theme_edit_options} edit_mode={edit_mode}/>
+                    <Button variant="ghost" on:click={toggleAddTheme}> 
+                        {#if add_theme}
+                            <Minus />
+                        {:else}
+                            <Plus/>
+                        {/if}
+                    </Button>
                 {:else}
-                    {new_name}
+                    {themes_to_display}
                 {/if}
             </div>
-        </div>
 
-        <div class="flex flex-row text-sm gap-3 items-center">
-            {#if edit_mode}
-                <div class="flex font-bold">
-                    Temas:
-                </div>
-                <DropdownButton label = {themes_to_display} bind:options={theme_edit_options} edit_mode={edit_mode}/>
-                <Button variant="ghost" on:click={toggleAddTheme}> 
-                    {#if add_theme}
-                        <Minus />
-                    {:else}
-                        <Plus/>
-                    {/if}
-                </Button>
-            {:else}
-                {themes_to_display}
-            {/if}
-        </div>
-
-        <div class="flex flex-col gap-3">
-            {#if edit_mode && add_theme}
-               <div class="flex flex-row text-sm gap-2 items-center">
-                    <div class="font-bold">
-                        Novo tema:
+            <div class="flex flex-col gap-3">
+                {#if edit_mode && add_theme}
+                <div class="flex flex-row text-sm gap-2 items-center">
+                        <div class="font-bold">
+                            Novo tema:
+                        </div>
+                        <Input placeholder="" class="flex w-48" bind:value={new_theme}/>
+        
                     </div>
-                    <Input placeholder="" class="flex w-48" bind:value={new_theme}/>
-    
-                </div>
-                <div class="flex flex-row place-content-end">
-                    <Button variant="outline" on:click={addNewTheme}>
-                        Acrescentar tema
-                    </Button>
-                </div>
-            {/if}
+                    <div class="flex flex-row place-content-end">
+                        <Button variant="outline" on:click={addNewTheme}>
+                            Acrescentar tema
+                        </Button>
+                    </div>
+                {/if}
+            </div>
+
         </div>
 
+        <div class="flex flex-1 justify-end">
+            <Button variant="outline" class="flex" on:click={toggleEdit}>
+                {#if edit_mode}
+                    A Editar
+                {:else}
+                    Editar
+                {/if}
+            </Button>
+        </div>
     </div>
+
+  
 
     <div>
         <Tabs.Root value="configuracao" class="flex flex-col items-center gap-y-2">
