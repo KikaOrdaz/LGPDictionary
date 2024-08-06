@@ -50,9 +50,13 @@
     let database_ann_array : Array<number>
     let themes : string[] = []
 
-    let new_name : string = sign.name
+    let new_name : string
+    $: new_name = sign.name
+    let current_video : string
+    $: current_video = sign.video
     let new_theme : string = ""
-    let themes_to_display = sign.theme
+    let themes_to_display 
+    $: themes_to_display = sign.theme
 
     let written_anotation = {configuration: "", movement: ["","",""], orientation: ["",""]}
 
@@ -106,10 +110,6 @@
 		theme_edit_options.push(option)
 	})
     
-   
-    // $: anotatedCount = folder.signs_id.filter((v: any) => v.anotated).length;
-    $: current_video = sign.video
-
     let signStores = new Map<any, any>(); // Map to store separate stores for each sign
 
     if(anotationArray == null){
