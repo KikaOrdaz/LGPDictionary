@@ -639,7 +639,7 @@
         <div class="flex flex-1 justify-end">
             <Button variant="outline" class="flex" on:click={toggleEdit}>
                 {#if edit_mode}
-                    A Editar
+                   Guardar Nome e Tema
                 {:else}
                     Editar
                 {/if}

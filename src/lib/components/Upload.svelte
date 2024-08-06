@@ -137,6 +137,7 @@
 			<Dialog.Title>Adicionar gesto(s)</Dialog.Title>
 			<Dialog.Description>Fazer upload de um só gesto ou de uma pasta.</Dialog.Description>
 			<Dialog.Description>Tamanho máximo de 50 MB.</Dialog.Description>
+			<Dialog.Description>Ficheiros não devem conter acentos nem caractéres especiais.</Dialog.Description>
 		</Dialog.Header>
 		<div class="w-fit items-center">
 			<form>
