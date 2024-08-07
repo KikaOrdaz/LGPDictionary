@@ -4,6 +4,7 @@
     import { Separator } from "$lib/components/ui/separator";
     import PencilCircleFill from "$lib/img/pencil_circle_fill.svelte";
 	import DropdownButton from '$lib/components/DropdownButton.svelte';
+	import { goto } from "$app/navigation";
 
 
     export let data: any;
@@ -17,6 +18,7 @@
 
     function changeCurrentSign(sign : any){
         current_sign = sign
+        goto('./'+sign.id, {invalidateAll: true})
     }
 
     export let anotation_options : {name: string, show: boolean}[]
