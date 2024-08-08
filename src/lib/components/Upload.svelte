@@ -12,7 +12,7 @@
 	let stroke = 'black';
 	let open = false;
 	let files: FileList
-	let sign = {name :"", theme: [""], video:""}
+	let sign = {name :"", theme: [""], video:"", annotation_array:[""]}
 
 	function getSignByName(name : any) {
     	return database.signs.find((item: { name: any; }) => item.name === name);
@@ -62,6 +62,7 @@
 		if(sign.name == ""){
 			sign.name = file.name.substring(0, file.name.lastIndexOf(".mp4"));
 			sign.theme =  ["tema por definir"]
+			sign.annotation_array = Array(279).fill("0");
 		}
 
 		

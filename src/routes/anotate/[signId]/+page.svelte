@@ -154,8 +154,14 @@
     
   
     async function insertAnotation(annotation: AnnotationArray, sign_id: number) {
+
+        console.log("insert anotation")
     
         let db_annotation_array = getSignById(sign_id).annotation_array
+
+        console.log(getSignById(sign_id))
+
+        console.log("db: " + db_annotation_array)
 
         if(annotation.configuration){
             annotation.configuration.forEach((parameter) => {
@@ -179,6 +185,9 @@
             })
         }
 
+        console.log("OLAAA")
+
+
         const { data, error } = await supabase
             .from('signs')
             // .select()
@@ -186,6 +195,8 @@
                 last_changed: ((new Date()).toISOString()).toLocaleString(), 
                 annotation_array: db_annotation_array}) 
             .eq('id', sign_id);
+
+
 
 
         console.log("data: ", data, " error: ", error);
@@ -233,7 +244,7 @@
     async function insertWrittenAnotation(written_anotation: {configuration: string, movement : string[], orientation: string[]}, sign_id: number) {
     
 
-    const { data, error } = await supabase
+        const { data, error } = await supabase
         .from('signs')
         // .select()
         .update({ written_anotation: written_anotation , last_changed: ((new Date()).toISOString()).toLocaleString()}) 
@@ -637,13 +648,13 @@
         </div>
 
         <div class="flex flex-1 justify-end">
-            <Button variant="outline" class="flex" on:click={toggleEdit}>
+         <!--    <Button variant="outline" class="flex" on:click={toggleEdit}>
                 {#if edit_mode}
                    Guardar Nome e Tema
                 {:else}
                     Editar
                 {/if}
-            </Button>
+            </Button> -->
         </div>
     </div>
 
